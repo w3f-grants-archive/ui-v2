@@ -1,10 +1,17 @@
 <template>
   <n-space justify="space-between">
-    <n-menu
-      v-model:value="activeKey"
-      mode="horizontal"
-      :options="menuOptions"
-    />
+    <n-space>
+      <img
+        src="~/assets/images/paraspellLogo.png"
+        alt="paraspell"
+        width="150"
+      />
+      <n-menu
+        v-model:value="activeKey"
+        mode="horizontal"
+        :options="menuOptions"
+      />
+    </n-space>
     <client-only>
       <layout-select />
       <wallet-component />
@@ -19,8 +26,8 @@
 import LayoutSelect from '@/components/utils/LayoutSelect.vue'
 import WalletComponent from '@/components/wallet/WalletComponent.vue'
 import {
-  AutoFixNormalFilled as MagicIcon,
-  BookFilled as BookIcon,
+  AppsFilled as AppsIcon,
+  CycloneFilled as CycloneIcon,
   HomeFilled as HomeIcon,
 } from '@vicons/material'
 import type { MenuOption } from 'naive-ui'
@@ -39,36 +46,90 @@ const menuOptions: MenuOption[] = [
         {
           href: '/',
         },
-        { default: () => 'Home' }
+        'Home'
       ),
     key: 'home',
     icon: renderIcon(HomeIcon),
   },
   {
-    label: () =>
-      h(
-        'a',
-        {
-          href: '/paraspell',
-        },
-        { default: () => 'Paraspell' }
-      ),
-    key: 'paraspell',
-    icon: renderIcon(MagicIcon),
+    label: 'Channels',
+    key: 'channels',
+    icon: renderIcon(AppsIcon),
+    children: [
+      {
+        label: () =>
+          h(
+            'a',
+            {
+              href: '/channels/open',
+            },
+            'Open channels'
+          ),
+        key: 'channels-open',
+      },
+      {
+        label: () =>
+          h(
+            'a',
+            {
+              href: '/channels/close',
+            },
+            'Close channels'
+          ),
+        key: 'channels-close',
+      },
+    ],
+  },
+  {
+    label: 'Teleport',
+    key: 'teleport',
+    icon: renderIcon(CycloneIcon),
+    children: [
+      {
+        label: () =>
+          h(
+            'a',
+            {
+              href: '/teleport/relay-para',
+            },
+            'From relay chain'
+          ),
+        key: 'teleport-relay-para',
+      },
+      {
+        label: () =>
+          h(
+            'a',
+            {
+              href: '/teleport/para-relay',
+            },
+            'From para-chain'
+          ),
+        key: 'teleport-para-relay',
+      },
+      {
+        label: () =>
+          h(
+            'a',
+            {
+              href: '/teleport/para-para',
+            },
+            'Para to Para'
+          ),
+        key: 'teleport-para-para',
+      },
+    ],
   },
   {
     label: () =>
       h(
         'a',
         {
-          href: 'https://github.com/kodadot/sub-scaffold',
-          target: '_blank',
-          rel: 'noopenner noreferrer',
+          href: '/xyk',
         },
-        'Github '
+        'XYK'
       ),
-    key: 'github',
-    icon: renderIcon(BookIcon),
+    key: 'xyk',
   },
 ]
 

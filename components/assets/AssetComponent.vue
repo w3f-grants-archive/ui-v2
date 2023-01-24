@@ -1,5 +1,9 @@
 <template>
   <n-space vertical>
+    <n-alert title="Current support" type="info">
+      Currently supported chains on Paraspell: &nbsp;
+      <code>{{ supportedNodes.join(', ') }}</code>
+    </n-alert>
     <n-space>
       Send to:
       <n-switch v-model:value="forMe">
@@ -61,19 +65,22 @@
   </n-space>
 </template>
 <script lang="ts" setup>
-import { TNode } from '@paraspell/sdk';
-import { ArrowBackOutlined, ArrowForwardOutlined } from '@vicons/material';
+import { TNode } from '@paraspell/sdk'
+import { ArrowBackOutlined, ArrowForwardOutlined } from '@vicons/material'
 import {
-NButton,
-NIcon,
-NInputNumber,
-NSelect,
-NSpace,
-NSwitch,
-type SelectOption
-} from 'naive-ui';
+  NAlert,
+  NButton,
+  NIcon,
+  NInputNumber,
+  NSelect,
+  NSpace,
+  NSwitch,
+  type SelectOption,
+} from 'naive-ui'
 
 const assetsStore = useAssetsStore()
+
+const supportedNodes = ['Acala', 'Bifrost', 'Kylin']
 
 // Node logic
 const nodeOptions = computed(() => assetsStore.nodeOptions)

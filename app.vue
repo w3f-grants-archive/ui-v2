@@ -6,7 +6,7 @@
   </n-config-provider>
 </template>
 <script setup lang="ts">
-import { darkTheme, NConfigProvider } from 'naive-ui'
+import { lightTheme, NConfigProvider } from 'naive-ui'
 
-const theme = ref(darkTheme)
+const theme = ref(lightTheme)
 </script>
