@@ -22,12 +22,14 @@
           </n-button>
         </template>
       </client-only>
-      <dark-mode
-        v-if="mainStore.darkTheme"
-        class="themeIcon"
-        @click="mainStore.changeTheme()"
-      />
-      <light-mode v-else class="themeIcon" @click="mainStore.changeTheme()" />
+      <client-only>
+        <dark-mode
+          v-if="mainStore.darkTheme"
+          class="themeIcon"
+          @click="mainStore.changeTheme()"
+        />
+        <light-mode v-else class="themeIcon" @click="mainStore.changeTheme()" />
+      </client-only>
     </n-space>
   </n-space>
 </template>

@@ -17,7 +17,7 @@
           :key="wallet.meta.name"
           style="width: 100%"
           type="primary"
-          @click="selectWallet(wallet.address)"
+          @click="selectWallet(wallet.id)"
         >
           {{ wallet.meta.source }} ({{ wallet.meta.name }})
         </n-button>
@@ -25,8 +25,9 @@
           v-if="walletStore.selected"
           style="width: 100%"
           @click="disconnectWallet"
-          >Disconnect wallet</n-button
         >
+          Disconnect wallet
+        </n-button>
         <n-button style="width: 100%" @click="cancelModal">Cancel</n-button>
       </n-space>
     </n-card>
@@ -56,8 +57,8 @@ const cancelModal = () => {
 //Wallets
 const wallets = computed(() => walletStore.wallets)
 
-const selectWallet = (address: string) => {
-  walletStore.selectWallet(address)
+const selectWallet = (id: number) => {
+  walletStore.selectWallet(id)
   cancelModal()
 }
 

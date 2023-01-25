@@ -6,9 +6,15 @@ const logger = Consola.create({
     tag: 'store::wallet:',
   },
 })
+
+interface WalletsWithID extends InjectedAccountWithMeta {
+  id: number
+}
+
 type State = {
-  wallets: InjectedAccountWithMeta[]
-  selected: InjectedAccountWithMeta | null
+  wallets: WalletsWithID[]
+  selected: WalletsWithID | null
+  idCounter: number
 }
 
 export const useWalletStore = defineStore({
@@ -16,13 +22,17 @@ export const useWalletStore = defineStore({
   state: (): State => ({
     wallets: [],
     selected: null,
+    idCounter: 0,
   }),
   actions: {
     /**
      * Fetches the list of wallets from the API
      */
     setWallets(wallets: InjectedAccountWithMeta[]) {
-      this.wallets = wallets
+      this.wallets = wallets.map((wallet) => ({
+        ...wallet,
+        id: this.idCounter++,
+      }))
     },
     /**
      * Disconnect current wallet
@@ -33,13 +43,13 @@ export const useWalletStore = defineStore({
     /**
      * Set current wallet
      */
-    selectWallet(address: string): void {
-      const selected = this.wallets.find((w) => w.address === address)
+    selectWallet(id: number): void {
+      const selected = this.wallets.find((w) => w.id === id)
       if (!selected) {
-        logger.error('Cannot locate this wallet', address, this.wallets)
+        logger.error('Cannot locate this wallet', id, this.wallets)
         return
       }
-      this.selected = selected as InjectedAccountWithMeta
+      this.selected = selected
     },
   },
 })
