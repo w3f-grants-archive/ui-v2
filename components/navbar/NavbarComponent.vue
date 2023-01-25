@@ -12,13 +12,23 @@
         :options="menuOptions"
       />
     </n-space>
-    <client-only>
+    <n-space justify="end" align="center">
       <layout-select />
-      <wallet-component />
-      <template #fallback>
-        <n-button style="margin: 10px" disabled> Loading wallets... </n-button>
-      </template>
-    </client-only>
+      <client-only>
+        <wallet-component />
+        <template #fallback>
+          <n-button style="margin: 10px" disabled>
+            Loading wallets...
+          </n-button>
+        </template>
+      </client-only>
+      <dark-mode
+        v-if="mainStore.darkTheme"
+        class="themeIcon"
+        @click="mainStore.changeTheme()"
+      />
+      <light-mode v-else class="themeIcon" @click="mainStore.changeTheme()" />
+    </n-space>
   </n-space>
 </template>
 
@@ -28,11 +38,15 @@ import WalletComponent from '@/components/wallet/WalletComponent.vue'
 import {
   AppsFilled as AppsIcon,
   CycloneFilled as CycloneIcon,
+  DarkModeFilled as DarkMode,
+  DarkModeTwotone as LightMode,
   HomeFilled as HomeIcon,
 } from '@vicons/material'
 import type { MenuOption } from 'naive-ui'
 import { NButton, NIcon, NMenu, NSpace } from 'naive-ui'
 import { Component, h, ref } from 'vue'
+
+const mainStore = useMainStore()
 
 function renderIcon(icon: Component) {
   return () => h(NIcon, null, { default: () => h(icon) })
@@ -135,3 +149,11 @@ const menuOptions: MenuOption[] = [
 
 const activeKey = ref<string | null>(null)
 </script>
+
+<style lang="scss" scoped>
+.themeIcon {
+  width: 30px;
+  cursor: pointer;
+  margin-right: 5px;
+}
+</style>
