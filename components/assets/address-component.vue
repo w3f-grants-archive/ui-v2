@@ -1,25 +1,27 @@
 <template>
-  <n-space>
-    <n-form-item
-      label="Address test:"
-      :validation-status="getValidationStatus(error)"
-      :feedback="error ? error : undefined"
-    >
-      <n-input
-        v-model:value="address"
-        placeholder="Address"
-        @change="handleInput"
-        autosize
-        style="min-width: 300px"
-      />
-    </n-form-item>
-  </n-space>
+  <n-form-item
+    :label="label"
+    :validation-status="getValidationStatus(error)"
+    :feedback="error ? error : undefined"
+  >
+    <n-input
+      v-model:value="address"
+      placeholder="Address"
+      autosize
+      style="min-width: 100%"
+      @change="handleInput"
+    />
+  </n-form-item>
 </template>
 <script lang="ts" setup>
 import { checkAddress, isAddress } from '@polkadot/util-crypto'
-import { NFormItem, NInput, NSpace } from 'naive-ui'
+import { NFormItem, NInput } from 'naive-ui'
 
 const props = defineProps({
+  modelValue: {
+    type: String,
+    default: '',
+  },
   strict: {
     type: Boolean,
     default: false,
@@ -28,11 +30,21 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  label: {
+    type: String,
+    default: undefined,
+  },
 })
+
+const emit = defineEmits(['update:modelValue'])
 
 const { urlPrefix } = usePrefix()
 
 const address = ref<string>('')
+
+onMounted(() => {
+  address.value = props.modelValue ?? ''
+})
 
 const error = ref<string | null>(null)
 
@@ -46,12 +58,13 @@ const handleInput = (value: string) => {
   if (props.strict) {
     const [, err] = checkAddress(value, correctAddressFormat(ss58Format.value))
     error.value = value ? err : ''
+  } else if (!props.emptyOnError && !value) {
+    error.value = ''
   } else {
-    if (!props.emptyOnError && !value) {
-      error.value = ''
-    } else {
-      error.value = isAddress(value) ? '' : 'Invalid address'
-    }
+    error.value = isAddress(value) ? '' : 'Invalid address'
+  }
+  if (!error.value) {
+    emit('update:modelValue', value)
   }
 }
 </script>

@@ -12,9 +12,9 @@
 </template>
 
 <script setup lang="ts">
-import AddressComponent from '@/components/assets/AddressComponent.vue'
-import AssetComponent from '@/components/assets/AssetComponent.vue'
 import { NSpace } from 'naive-ui'
+import AddressComponent from '~~/components/assets/address-component.vue'
+import AssetComponent from '~~/components/assets/asset-component.vue'
 </script>
 
 <style scoped lang="scss">

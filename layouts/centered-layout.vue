@@ -2,9 +2,14 @@
   <n-layout>
     <navbar-component />
     <n-layout-content content-style="padding: 24px;">
-      <n-space vertical size="large">
-        <slot />
-      </n-space>
+      <n-grid x-gap="12" :cols="3">
+        <n-gi offset="1">
+          <slot />
+        </n-gi>
+        <n-gi>
+          <div />
+        </n-gi>
+      </n-grid>
     </n-layout-content>
     <n-layout-footer>
       <footer-component />
@@ -12,11 +17,5 @@
   </n-layout>
 </template>
 <script setup lang="ts">
-import {
-  NLayout,
-  NLayoutContent,
-  NLayoutFooter,
-  NLayoutHeader,
-  NSpace,
-} from 'naive-ui'
+import { NGi, NGrid, NLayout, NLayoutContent, NLayoutFooter } from 'naive-ui'
 </script>

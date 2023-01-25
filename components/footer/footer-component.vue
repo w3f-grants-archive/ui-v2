@@ -7,22 +7,22 @@
       <div class="sponsors">
         <p class="heading">Sponsors</p>
         <p>
-          <a target="_blank" href="https://github.com/paraspell"
-            >ParaSpell<span class="icon"><OpenInNewRound /></span
-          ></a>
+          <a target="_blank" href="https://github.com/paraspell">
+            ParaSpell<span class="icon"><OpenInNewRound /> </span>
+          </a>
         </p>
       </div>
       <div class="about-section">
         <p class="heading">About</p>
         <p>
-          <a target="_blank" href="https://github.com/paraspell"
-            >ParaSpell GitHub <span class="icon"><OpenInNewRound /></span
-          ></a>
+          <a target="_blank" href="https://github.com/paraspell">
+            ParaSpell GitHub <span class="icon"><OpenInNewRound /> </span>
+          </a>
         </p>
         <p>
-          <a target="_blank" href="https://github.com/kodadot"
-            >KodaDot GitHub <span class="icon"><OpenInNewRound /></span
-          ></a>
+          <a target="_blank" href="https://github.com/kodadot">
+            KodaDot GitHub <span class="icon"><OpenInNewRound /></span>
+          </a>
         </p>
       </div>
       <div class="socials">
@@ -40,6 +40,16 @@
     </div>
   </footer>
 </template>
+
+<script lang="ts" setup>
+import {
+  DiscordRound,
+  FacebookRound,
+  OpenInNewRound,
+  RedditRound,
+  TelegramRound,
+} from '@vicons/material'
+</script>
 
 <style lang="scss">
 .footer-content {
@@ -120,13 +130,3 @@
   }
 }
 </style>
-
-<script lang="ts" setup>
-import {
-  DiscordRound,
-  FacebookRound,
-  OpenInNewRound,
-  RedditRound,
-  TelegramRound,
-} from '@vicons/material'
-</script>

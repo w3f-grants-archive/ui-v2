@@ -7,6 +7,11 @@ const logger = Consola.create({
   },
 })
 
+type DestinationOption = {
+  label: string
+  value: string
+}
+
 type State = {
   assets: TNodeAssets | null
 }
@@ -41,11 +46,9 @@ export const useAssetsStore = defineStore({
       source: string,
       destination: string
     ) {
-      //TODO: Decimals currentlty not implemented on paraspell side
-      const decimals = 12
       logger.success(
         `send ${source} => ${destination}`,
-        balance * 10 ** decimals,
+        balance * 10 ** selectedAsset.decimals,
         selectedAsset,
         forMe
       )
@@ -60,20 +63,22 @@ export const useAssetsStore = defineStore({
       if (!state.assets) return []
       return [
         ...state.assets.nativeAssets.reduce((acc, value) => {
-          acc.push({ assetId: 'native', symbol: value })
+          acc.push({ assetId: 'native', ...value })
           return acc
         }, [] as TAssetDetails[]),
         ...state.assets.otherAssets,
       ]
     },
-    destinationOptions: (state) => (symbol: string, currentNode: string) => {
-      const { $paraspell } = useNuxtApp()
-      return NODE_NAMES.filter(
-        (node) =>
-          node !== currentNode &&
-          $paraspell.assets.hasSupportForAsset(node, symbol)
-      ).map((name) => ({ value: name, label: name }))
-    },
+    destinationOptions:
+      () =>
+      (symbol: string, currentNode: string): DestinationOption[] => {
+        const { $paraspell } = useNuxtApp()
+        return NODE_NAMES.filter(
+          (node) =>
+            node !== currentNode &&
+            $paraspell.assets.hasSupportForAsset(node, symbol)
+        ).map((name) => ({ value: name, label: name }))
+      },
   },
 })
 

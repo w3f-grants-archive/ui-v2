@@ -28,7 +28,7 @@
         >
           Disconnect wallet
         </n-button>
-        <n-button style="width: 100%" @click="cancelModal">Cancel</n-button>
+        <n-button style="width: 100%" @click="cancelModal"> Cancel </n-button>
       </n-space>
     </n-card>
   </n-modal>
@@ -54,7 +54,7 @@ const cancelModal = () => {
   modalState.value = false
 }
 
-//Wallets
+// Wallets
 const wallets = computed(() => walletStore.wallets)
 
 const selectWallet = (id: number) => {
