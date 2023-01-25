@@ -1,7 +1,7 @@
 import { NODE_NAMES, TAssetDetails, TNode, TNodeAssets } from '@paraspell/sdk'
-import Consola from 'consola'
+import consola from 'consola'
 
-const logger = Consola.create({
+const logger = consola.create({
   defaults: {
     tag: 'store::assets:',
   },
@@ -39,7 +39,7 @@ export const useAssetsStore = defineStore({
      * @param balance Amount of tokens
      * @param currencyId Token ID
      */
-    async send(
+    send(
       balance: number,
       selectedAsset: TAssetDetails,
       forMe: boolean,
@@ -55,7 +55,7 @@ export const useAssetsStore = defineStore({
     },
   },
   getters: {
-    nodeOptions: (state) => {
+    nodeOptions: (): DestinationOption[] => {
       return NODE_NAMES.map((name) => ({ value: name, label: name }))
     },
     assetOptions: (state): TAssetDetails[] => {

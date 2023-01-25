@@ -35,8 +35,6 @@
 </template>
 
 <script lang="ts" setup>
-import LayoutSelect from '@/components/utils/LayoutSelect.vue'
-import WalletComponent from '@/components/wallet/WalletComponent.vue'
 import {
   AppsFilled as AppsIcon,
   CycloneFilled as CycloneIcon,
@@ -47,6 +45,8 @@ import {
 import type { MenuOption } from 'naive-ui'
 import { NButton, NIcon, NMenu, NSpace } from 'naive-ui'
 import { Component, h, ref } from 'vue'
+import WalletComponent from '@/components/wallet/wallet-component.vue'
+import LayoutSelect from '@/components/utils/layout-select.vue'
 
 const mainStore = useMainStore()
 

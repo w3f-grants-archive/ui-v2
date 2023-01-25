@@ -1,7 +1,7 @@
 import { InjectedAccountWithMeta } from '@polkadot/extension-inject/types'
-import Consola from 'consola'
+import consola from 'consola'
 
-const logger = Consola.create({
+const logger = consola.create({
   defaults: {
     tag: 'store::wallet:',
   },

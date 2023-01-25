@@ -1,9 +1,8 @@
 <template>
   <div>
-    <h1>Relay to para</h1>
+    <h1>Relay to Para</h1>
     <n-space vertical>
       <asset-component />
-      <address-component />
     </n-space>
     <n-space vertical>
       <span class="filler" />
@@ -13,7 +12,6 @@
 
 <script setup lang="ts">
 import { NSpace } from 'naive-ui'
-import AddressComponent from '~~/components/assets/address-component.vue'
 import AssetComponent from '~~/components/assets/asset-component.vue'
 </script>
 
