@@ -7,7 +7,7 @@ const logger = consola.create({
   },
 })
 
-type DestinationOption = {
+export type DestinationOption = {
   label: string
   value: string
 }
@@ -27,12 +27,14 @@ export const useAssetsStore = defineStore({
      * @param node
      */
     selectNode(node: TNode | null) {
+      const notificationStore = useNotificationStore()
       if (!node) {
         this.assets = null
         return
       }
       const { $paraspell } = useNuxtApp()
       this.assets = $paraspell.assets.getAssetsObject(node)
+      notificationStore.create('Node selected', `Selected node: ${node}`)
     },
     /**
      * Send a transaction

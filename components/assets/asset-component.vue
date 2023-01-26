@@ -102,9 +102,13 @@ import {
   NSelect,
   NSpace,
   NSwitch,
-  SelectOption,
+  type SelectGroupOption,
+  type SelectOption,
 } from 'naive-ui'
 import AddressComponent from './address-component.vue'
+import type { DestinationOption } from '@/stores/AssetStore'
+/// Notification logic
+const notificationStore = useNotificationStore()
 /// Wallets logic
 const walletStore = useWalletStore()
 const wallet = computed(() => walletStore.selected)
@@ -114,10 +118,46 @@ const hasWallet = computed(() => !!wallet.value)
 /// Assets logic
 const assetsStore = useAssetsStore()
 
-const supportedNodes = ['Acala', 'Bifrost', 'Kylin']
+const supportedNodes = ['Karura', 'Bifrost', 'Pichiu']
 
 // Node logic
-const nodeOptions = computed(() => assetsStore.nodeOptions)
+const splitNodesByAvailibility = (
+  nodes: DestinationOption[]
+): [DestinationOption[], (DestinationOption & { disabled: boolean })[]] => {
+  return nodes.reduce(
+    (acc, val) => {
+      if (supportedNodes.find((symbol) => val.label.startsWith(symbol))) {
+        acc[0].push(val)
+        return acc
+      }
+      acc[1].push({ ...val, disabled: true })
+      return acc
+    },
+    [[], []] as [
+      DestinationOption[],
+      (DestinationOption & { disabled: boolean })[]
+    ]
+  )
+}
+const nodeOptions = computed<Array<SelectOption | SelectGroupOption>>(() => {
+  const [availible, unavailible] = splitNodesByAvailibility(
+    assetsStore.nodeOptions
+  )
+  return [
+    {
+      type: 'group',
+      label: 'Availible nodes',
+      key: 'availible',
+      children: availible,
+    },
+    {
+      type: 'group',
+      label: 'Unavailable nodes',
+      key: 'unavailable',
+      children: unavailible,
+    },
+  ]
+})
 const selectedNode = ref<TNode | null>(null)
 
 // Asset logic
@@ -139,7 +179,26 @@ const destinationOptions = computed(() => {
     (asset) => asset.id === selectedAsset.value
   )
   if (!asset) return []
-  return assetsStore.destinationOptions(asset.symbol, selectedNode.value)
+  const nodeOptions = assetsStore.destinationOptions(
+    asset.symbol,
+    selectedNode.value
+  )
+
+  const [availible, unavailible] = splitNodesByAvailibility(nodeOptions)
+  return [
+    {
+      type: 'group',
+      label: 'Availible nodes',
+      key: 'availible',
+      children: availible,
+    },
+    {
+      type: 'group',
+      label: 'Unavailable nodes',
+      key: 'unavailable',
+      children: unavailible,
+    },
+  ]
 })
 const selectedDestination = ref<TNode | null>(null)
 
@@ -148,11 +207,13 @@ const clearNode = () => {
   selectedDestination.value = null
   balance.value = 0
   assetsStore.selectNode(null)
+  notificationStore.create('Node cleared')
 }
 
 const clearAsset = () => {
   selectedDestination.value = null
   balance.value = 0
+  notificationStore.create('Asset cleared')
 }
 
 // For me logic
@@ -175,7 +236,10 @@ const onSend = () => {
   const asset = availibleAssets.value.find(
     (asset) => asset.id === selectedAsset.value
   )
-  if (!asset) return []
+  if (!asset) {
+    notificationStore.create('Invalid asset selected')
+    return
+  }
   assetsStore.send(
     balance.value,
     asset,
