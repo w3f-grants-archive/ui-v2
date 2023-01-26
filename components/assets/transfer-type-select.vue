@@ -1,5 +1,5 @@
 <template>
-  <n-form-item>
+  <n-form-item label="Select teleport type">
     <n-select
       v-model:value="selectedType"
       :options="typeOptions"
@@ -17,9 +17,9 @@ import { TransferType } from '~~/stores/AssetStore'
 const $emit = defineEmits(['change', 'clear'])
 
 const typeOptions: SelectOption[] = [
-  { label: 'Relay to Para', value: 'RtP' },
-  { label: 'Para to Relay', value: 'PtR' },
-  { label: 'Para to Para', value: 'PtP' },
+  { label: 'Relay chain -> Parachain', value: 'RtP' },
+  { label: 'Parachain -> Relay chain', value: 'PtR' },
+  { label: 'Parachain -> Parachain', value: 'PtP' },
 ]
 
 const selectedType = ref<TransferType | null>(null)

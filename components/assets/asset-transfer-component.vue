@@ -13,35 +13,40 @@
       <code>{{ wallet?.meta.source }} ({{ wallet?.meta.name }})</code>
     </n-alert>
     <n-form>
-      <transfer-type-select
-        @change="(val) => (selectedType = val)"
-        @clear="clearType"
-      />
+      <transfer-type-select @change="setTransferType" @clear="clearType" />
 
       <address-component
-        v-if="!forMe"
+        v-if="selectedType"
         v-model="destinationAddress"
         label="Destination address"
       />
 
       <source-node
+        v-if="selectedType === 'PtP'"
+        :node="selectedNode"
+        :ptp="selectedType === 'PtP'"
         @clear="clearNode"
-        @change="(node) => (selectedNode = node)"
+        @change="setSourceNode"
       />
 
       <asset-select
+        v-if="selectedType"
+        :asset="selectedAsset"
+        :transfer-type="selectedType"
         :selected-node="selectedNode"
         @clear="clearAsset"
-        @change="(asset) => (selectedAsset = asset)"
+        @change="setAsset"
       />
 
       <destination-node
+        v-if="selectedType"
+        :destination="selectedDestination"
         :selected-node="selectedNode"
         :selected-asset="selectedAsset"
         @clear="clearDestination"
         @change="(dest) => (selectedDestination = dest)"
       />
-      <n-form-item>
+      <n-form-item v-if="selectedType">
         <div class="ammount-wrapper">
           <n-input-number
             v-model:value="balance"
@@ -74,7 +79,7 @@ import SourceNode from './source-node.vue'
 import AssetSelect from './asset-select.vue'
 import DestinationNode from './destination-node.vue'
 import TransferTypeSelect from './transfer-type-select.vue'
-import type { TransferType } from '~/stores/AssetStore.ts'
+import type { TransferType } from '~/stores/AssetStore'
 /// Notification logic
 const notificationStore = useNotificationStore()
 /// Wallets logic
@@ -88,18 +93,48 @@ const assetsStore = useAssetsStore()
 
 const selectedType = ref<TransferType | null>(null)
 
+const setTransferType = (type: TransferType) => {
+  selectedType.value = type
+  clearNode()
+}
+
+const destinationAddress = ref('')
+
 const selectedNode = ref<TNode | null>(null)
+
+const setSourceNode = (node: TNode) => {
+  selectedNode.value = node
+  clearAsset()
+}
 
 const selectedAsset = ref<number | null>(null)
 
+const setAsset = (assetId: number) => {
+  selectedAsset.value = assetId
+  clearDestination()
+}
+
 const selectedDestination = ref<TNode | null>(null)
+
+const balance = ref(0)
+
+watch(
+  () => selectedType.value,
+  (val) => {
+    if (val !== 'PtP') {
+      selectedNode.value = null
+      assetsStore.selectNode(null)
+    }
+  }
+)
+
 // Clearing
 const clearType = () => {
   selectedNode.value = null
   clearNode()
 }
 const clearNode = () => {
-  assetsStore.selectNode(null)
+  assetsStore.selectNode(null, selectedType.value === 'PtP')
   selectedAsset.value = null
   clearAsset()
 }
@@ -111,15 +146,11 @@ const clearDestination = () => {
   balance.value = 0
 }
 
-const destinationAddress = ref('')
-
-// Balance logic
-const balance = ref(0)
-
 // Send logic
 const canSend = computed(
   () =>
     hasWallet.value &&
+    selectedType.value &&
     selectedNode.value &&
     selectedAsset.value &&
     balance.value > 0
@@ -135,13 +166,18 @@ const onSend = () => {
   assetsStore.send(
     balance.value,
     asset,
-    selectedType.value,
+    selectedType.value!,
     selectedNode.value!,
     selectedDestination.value!
   )
 }
 </script>
 <style lang="scss">
+.address-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
 .ammount-wrapper {
   width: 100%;
   display: flex;

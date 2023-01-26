@@ -1,21 +1,38 @@
 <template>
-  <n-form-item
-    :label="label"
-    :validation-status="getValidationStatus(error)"
-    :feedback="error ? error : undefined"
-  >
-    <n-input
-      v-model:value="address"
-      placeholder="Address"
-      autosize
-      style="min-width: 100%"
-      @change="handleInput"
-    />
-  </n-form-item>
+  <n-grid :span="24" :x-gap="24">
+    <n-form-item-gi label="Send to:" :span="6">
+      <n-switch v-model:value="forMeSelect">
+        <template #unchecked> Address </template>
+        <template #unchecked-icon>
+          <n-icon :component="ArrowForwardOutlined" />
+        </template>
+        <template #checked> Myself </template>
+        <template #checked-icon>
+          <n-icon :component="ArrowBackOutlined" />
+        </template>
+      </n-switch>
+    </n-form-item-gi>
+    <n-form-item-gi
+      v-if="!forMeSelect"
+      :span="18"
+      :label="label"
+      :validation-status="getValidationStatus(error)"
+      :feedback="error ? error : undefined"
+    >
+      <n-input
+        v-model:value="address"
+        placeholder="Address"
+        autosize
+        style="min-width: 100%"
+        @change="handleInput"
+      />
+    </n-form-item-gi>
+  </n-grid>
 </template>
 <script lang="ts" setup>
 import { checkAddress, isAddress } from '@polkadot/util-crypto'
-import { NFormItem, NInput } from 'naive-ui'
+import { ArrowBackOutlined, ArrowForwardOutlined } from '@vicons/material'
+import { NFormItemGi, NInput, NGrid, NSwitch, NIcon } from 'naive-ui'
 
 const props = defineProps({
   modelValue: {
@@ -37,6 +54,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:modelValue'])
+
+const forMeSelect = ref(false)
 
 const { urlPrefix } = usePrefix()
 

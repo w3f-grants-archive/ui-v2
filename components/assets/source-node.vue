@@ -1,5 +1,5 @@
 <template>
-  <n-form-item>
+  <n-form-item label="Select source chain">
     <n-select
       v-model:value="selectedNode"
       :options="nodeOptions"
@@ -7,7 +7,7 @@
       placeholder="Select node"
       filterable
       clearable
-      @update:value="assetsStore.selectNode(selectedNode as TNode)"
+      @update:value="assetsStore.selectNode(selectedNode as TNode, ptp)"
       @clear="$emit('clear')"
     />
   </n-form-item>
@@ -20,34 +20,20 @@ import {
   type SelectGroupOption,
   type SelectOption,
 } from 'naive-ui'
-import type { DestinationOption } from '@/stores/AssetStore'
 
+const props = defineProps<{
+  ptp: boolean
+  node: TNode | null
+}>()
 const $emit = defineEmits(['change', 'clear'])
 
 // Node logic
 const assetsStore = useAssetsStore()
 
-const splitNodesByAvailibility = (
-  nodes: DestinationOption[]
-): [DestinationOption[], (DestinationOption & { disabled: boolean })[]] => {
-  return nodes.reduce(
-    (acc, val) => {
-      if (SUPPORTED_NODES.find((symbol) => val.label.startsWith(symbol))) {
-        acc[0].push(val)
-        return acc
-      }
-      acc[1].push({ ...val, disabled: true })
-      return acc
-    },
-    [[], []] as [
-      DestinationOption[],
-      (DestinationOption & { disabled: boolean })[]
-    ]
-  )
-}
 const nodeOptions = computed<Array<SelectOption | SelectGroupOption>>(() => {
   const [availible, unavailible] = splitNodesByAvailibility(
-    assetsStore.nodeOptions
+    assetsStore.nodeOptions,
+    SUPPORTED_NODES
   )
   return [
     {
@@ -65,6 +51,11 @@ const nodeOptions = computed<Array<SelectOption | SelectGroupOption>>(() => {
   ]
 })
 const selectedNode = ref<TNode | null>(null)
+
+watch(
+  () => props.node,
+  (val) => (selectedNode.value = val)
+)
 
 watch(
   () => selectedNode.value,

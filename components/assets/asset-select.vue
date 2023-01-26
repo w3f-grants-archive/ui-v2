@@ -1,11 +1,11 @@
 <template>
-  <n-form-item>
+  <n-form-item label="Select asset">
     <n-select
       v-model:value="selectedAsset"
       :options="assetsOptions"
       class="asset-select"
       placeholder="Select asset"
-      :disabled="!selectedNode"
+      :disabled="isDisabled"
       filterable
       clearable
       @clear="$emit('clear')"
@@ -15,24 +15,36 @@
 <script lang="ts" setup>
 import { TNode } from '@paraspell/sdk'
 import { NFormItem, NSelect, type SelectOption } from 'naive-ui'
+import { TransferType } from '~~/stores/AssetStore'
 const $emit = defineEmits(['clear', 'change'])
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 const props = defineProps<{
   selectedNode: TNode | null
+  asset: number | null
+  transferType: TransferType | null
 }>()
 
 /// Assets logic
 const assetsStore = useAssetsStore()
 
-// Asset logic
 const availibleAssets = computed(() =>
   assetsStore.assetOptions.map((asset, id) => ({ id, ...asset }))
 )
+
+const isDisabled = computed(() => {
+  if (props.transferType === 'PtP') return !props.selectedNode
+  return false
+})
 
 const assetsOptions = computed<SelectOption[]>(() =>
   availibleAssets.value.map(({ symbol, id }) => ({ label: symbol, value: id }))
 )
 const selectedAsset = ref<number | null>(null)
+watch(
+  () => props.asset,
+  (val) => (selectedAsset.value = val)
+)
+
 watch(
   () => selectedAsset.value,
   (val) => {

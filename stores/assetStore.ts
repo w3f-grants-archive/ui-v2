@@ -6,7 +6,7 @@ const logger = consola.create({
     tag: 'store::assets:',
   },
 })
-export const SUPPORTED_NODES = ['Karura', 'Bifrost', 'Pichiu'] as const
+export const SUPPORTED_NODES = ['Karura', 'BifrostKusama', 'Pichiu']
 
 /**
  * Shortcuts are standing for:
@@ -35,13 +35,16 @@ export const useAssetsStore = defineStore({
      * Select node to show assets
      * @param node
      */
-    selectNode(node: TNode | null) {
+    selectNode(node: TNode | null, ptp = false): void {
       const notificationStore = useNotificationStore()
+      const { $paraspell } = useNuxtApp()
+      // TODO: Do we want BifrostKusama as Relay chain?
+      if (!ptp) {
+        node = 'BifrostKusama'
+      }
       if (!node) {
-        this.assets = null
         return
       }
-      const { $paraspell } = useNuxtApp()
       this.assets = $paraspell.assets.getAssetsObject(node)
       notificationStore.create('Node selected', `Selected node: ${node}`)
     },
@@ -56,7 +59,7 @@ export const useAssetsStore = defineStore({
       type: TransferType,
       source: string,
       destination: string
-    ) {
+    ): void {
       logger.success(
         `send ${source} => ${destination}`,
         balance * 10 ** selectedAsset.decimals,
@@ -81,8 +84,11 @@ export const useAssetsStore = defineStore({
       ]
     },
     destinationOptions:
-      () =>
-      (symbol: string, currentNode: string): DestinationOption[] => {
+      (): Function =>
+      (
+        symbol: string,
+        currentNode: TNode = 'BifrostKusama'
+      ): DestinationOption[] => {
         const { $paraspell } = useNuxtApp()
         return NODE_NAMES.filter(
           (node) =>

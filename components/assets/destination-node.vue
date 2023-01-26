@@ -1,5 +1,5 @@
 <template>
-  <n-form-item>
+  <n-form-item label="Select destination chain">
     <n-select
       v-model:value="selectedDestination"
       class="destination-select"
@@ -15,37 +15,17 @@
 <script lang="ts" setup>
 import { TNode } from '@paraspell/sdk'
 import { NFormItem, NSelect } from 'naive-ui'
-import type { DestinationOption } from '@/stores/AssetStore'
 
 const props = defineProps<{
   selectedAsset: number | null
   selectedNode: TNode | null
+  destination: TNode | null
 }>()
 
 const $emit = defineEmits(['clear', 'change'])
 
 /// Assets logic
 const assetsStore = useAssetsStore()
-
-// Node logic
-const splitNodesByAvailibility = (
-  nodes: DestinationOption[]
-): [DestinationOption[], (DestinationOption & { disabled: boolean })[]] => {
-  return nodes.reduce(
-    (acc, val) => {
-      if (SUPPORTED_NODES.find((symbol) => val.label.startsWith(symbol))) {
-        acc[0].push(val)
-        return acc
-      }
-      acc[1].push({ ...val, disabled: true })
-      return acc
-    },
-    [[], []] as [
-      DestinationOption[],
-      (DestinationOption & { disabled: boolean })[]
-    ]
-  )
-}
 
 // Asset logic
 const availibleAssets = computed(() =>
@@ -54,7 +34,7 @@ const availibleAssets = computed(() =>
 
 // Destination logic
 const destinationOptions = computed(() => {
-  if (!props.selectedAsset || !props.selectedNode) {
+  if (!props.selectedAsset) {
     return []
   }
   const asset = availibleAssets.value.find(
@@ -66,7 +46,12 @@ const destinationOptions = computed(() => {
     props.selectedNode
   )
 
-  const [availible, unavailible] = splitNodesByAvailibility(nodeOptions)
+  const [availible, unavailible] = splitNodesByAvailibility(
+    nodeOptions,
+    SUPPORTED_NODES.filter(
+      (node) => node !== (props.selectedNode ?? 'BifrostKusama')
+    )
+  )
   return [
     {
       type: 'group',
@@ -83,7 +68,10 @@ const destinationOptions = computed(() => {
   ]
 })
 const selectedDestination = ref<TNode | null>(null)
-
+watch(
+  () => props.destination,
+  (val) => (selectedDestination.value = val)
+)
 watch(
   () => selectedDestination.value,
   (val) => {
