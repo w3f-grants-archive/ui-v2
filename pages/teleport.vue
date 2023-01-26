@@ -1,8 +1,8 @@
 <template>
   <div>
-    <h1>Para to Relay</h1>
+    <h1>Teleport</h1>
     <n-space vertical>
-      <asset-component />
+      <asset-transfer-component />
     </n-space>
     <n-space vertical>
       <span class="filler" />
@@ -12,7 +12,7 @@
 
 <script setup lang="ts">
 import { NSpace } from 'naive-ui'
-import AssetComponent from '~~/components/assets/asset-component.vue'
+import AssetTransferComponent from '~~/components/assets/asset-transfer-component.vue'
 </script>
 
 <style scoped lang="scss">

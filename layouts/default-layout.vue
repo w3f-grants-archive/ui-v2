@@ -1,10 +1,15 @@
 <template>
   <n-layout>
     <navbar-component />
-    <n-layout-content content-style="padding: 2% 5%;">
-      <n-space vertical size="large">
-        <slot />
-      </n-space>
+    <n-layout-content content-style="padding: 24px;">
+      <n-grid x-gap="12" :cols="3">
+        <n-gi offset="1">
+          <slot />
+        </n-gi>
+        <n-gi>
+          <div />
+        </n-gi>
+      </n-grid>
     </n-layout-content>
     <n-layout-footer>
       <footer-component />
@@ -14,9 +19,10 @@
 <script setup lang="ts">
 import {
   NLayout,
+  NGrid,
+  NGi,
   NLayoutContent,
   NLayoutFooter,
-  NSpace,
   useNotification,
 } from 'naive-ui'
 import type { Notification } from '~~/stores/NotificationStore'

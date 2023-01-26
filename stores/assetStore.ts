@@ -6,6 +6,15 @@ const logger = consola.create({
     tag: 'store::assets:',
   },
 })
+export const SUPPORTED_NODES = ['Karura', 'Bifrost', 'Pichiu'] as const
+
+/**
+ * Shortcuts are standing for:
+ * PtP -> Para to Para
+ * RtP -> Relat to Para
+ * PtR -> Para to Relay
+ */
+export type TransferType = 'PtP' | 'RtP' | 'PtR'
 
 export type DestinationOption = {
   label: string
@@ -44,7 +53,7 @@ export const useAssetsStore = defineStore({
     send(
       balance: number,
       selectedAsset: TAssetDetails,
-      forMe: boolean,
+      type: TransferType,
       source: string,
       destination: string
     ) {
@@ -52,7 +61,7 @@ export const useAssetsStore = defineStore({
         `send ${source} => ${destination}`,
         balance * 10 ** selectedAsset.decimals,
         selectedAsset,
-        forMe
+        type
       )
     },
   },

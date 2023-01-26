@@ -68,73 +68,28 @@ const menuOptions: MenuOption[] = [
     icon: renderIcon(HomeIcon),
   },
   {
-    label: 'Channels',
+    label: () =>
+      h(
+        'a',
+        {
+          href: '/channels',
+        },
+        'Channels'
+      ),
     key: 'channels',
     icon: renderIcon(AppsIcon),
-    children: [
-      {
-        label: () =>
-          h(
-            'a',
-            {
-              href: '/channels/open',
-            },
-            'Open channels'
-          ),
-        key: 'channels-open',
-      },
-      {
-        label: () =>
-          h(
-            'a',
-            {
-              href: '/channels/close',
-            },
-            'Close channels'
-          ),
-        key: 'channels-close',
-      },
-    ],
   },
   {
-    label: 'Teleport',
+    label: () =>
+      h(
+        'a',
+        {
+          href: '/teleport',
+        },
+        'Teleport'
+      ),
     key: 'teleport',
     icon: renderIcon(CycloneIcon),
-    children: [
-      {
-        label: () =>
-          h(
-            'a',
-            {
-              href: '/teleport/relay-para',
-            },
-            'From relay chain'
-          ),
-        key: 'teleport-relay-para',
-      },
-      {
-        label: () =>
-          h(
-            'a',
-            {
-              href: '/teleport/para-relay',
-            },
-            'From para-chain'
-          ),
-        key: 'teleport-para-relay',
-      },
-      {
-        label: () =>
-          h(
-            'a',
-            {
-              href: '/teleport/para-para',
-            },
-            'Para to Para'
-          ),
-        key: 'teleport-para-para',
-      },
-    ],
   },
   {
     label: () =>
