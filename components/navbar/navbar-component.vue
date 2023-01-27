@@ -10,10 +10,10 @@
     </n-space>
     <n-space justify="end" align="center">
       <client-only>
-        <wallet-component />
+        <account-component />
         <template #fallback>
           <n-button style="margin: 10px" disabled>
-            Loading wallets...
+            Loading accounts...
           </n-button>
         </template>
       </client-only>
@@ -40,7 +40,7 @@ import {
 import type { MenuOption } from 'naive-ui'
 import { NButton, NIcon, NMenu, NSpace } from 'naive-ui'
 import { Component, h, ref } from 'vue'
-import WalletComponent from '@/components/wallet/wallet-component.vue'
+import AccountComponent from '@/components/account/account-component.vue'
 
 const mainStore = useMainStore()
 

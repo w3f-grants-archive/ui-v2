@@ -4,13 +4,13 @@
       Currently supported chains on Paraspell: &nbsp;
       <code>{{ SUPPORTED_NODES.join(', ') }}</code>
     </n-alert>
-    <n-alert v-if="!hasWallet" title="Select wallet" type="error">
-      You didn't select any wallet. Please select your wallet to continue with
+    <n-alert v-if="!hasAccount" title="Select account" type="error">
+      You didn't select any account. Please select your account to continue with
       teleport process.
     </n-alert>
-    <n-alert v-else title="Your wallet" type="info">
-      Your current wallet: &nbsp;
-      <code>{{ wallet?.meta.source }} ({{ wallet?.meta.name }})</code>
+    <n-alert v-else title="Your account" type="info">
+      Your current account: &nbsp;
+      <code>{{ account?.meta.source }} ({{ account?.meta.name }})</code>
     </n-alert>
     <n-form>
       <transfer-type-select @change="setTransferType" @clear="clearType" />
@@ -90,11 +90,11 @@ import TransferTypeSelect from './transfer-type-select.vue'
 import type { TransferType } from '~/stores/AssetStore'
 /// Notification logic
 const notificationStore = useNotificationStore()
-/// Wallets logic
-const walletStore = useWalletStore()
-const wallet = computed(() => walletStore.selected)
+/// Account logic
+const accountStore = useAccountStore()
+const account = computed(() => accountStore.selected)
 
-const hasWallet = computed(() => !!wallet.value)
+const hasAccount = computed(() => !!account.value)
 
 /// Assets logic
 const assetsStore = useAssetsStore()
@@ -157,7 +157,7 @@ const clearDestination = () => {
 // Send logic
 const canSend = computed(
   () =>
-    hasWallet.value &&
+    hasAccount.value &&
     selectedType.value &&
     selectedNode.value &&
     selectedAsset.value &&

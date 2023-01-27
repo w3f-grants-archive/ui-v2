@@ -1,11 +1,11 @@
 <template>
   <n-button style="margin: 10px" @click="showModal">
-    {{ walletStore.selected ? selected : 'Connect your wallet' }}
+    {{ accountStore.selected ? selected : 'Select your account' }}
   </n-button>
   <n-modal v-model:show="modalState">
     <n-card
       style="padding: 5px; width: 300px"
-      title="Which wallet you want to connect?"
+      title="Which account do you want to use?"
       :bordered="false"
       role="dialog"
       aria-modal="true"
@@ -13,20 +13,20 @@
     >
       <n-space vertical :size="[10, 20]">
         <n-button
-          v-for="wallet in wallets"
-          :key="wallet.meta.name"
+          v-for="account in accounts"
+          :key="account.meta.name"
           style="width: 100%"
           type="primary"
-          @click="selectWallet(wallet.id)"
+          @click="selectAccount(account.id)"
         >
-          {{ wallet.meta.source }} ({{ wallet.meta.name }})
+          {{ account.meta.source }} ({{ account.meta.name }})
         </n-button>
         <n-button
-          v-if="walletStore.selected"
+          v-if="accountStore.selected"
           style="width: 100%"
-          @click="disconnectWallet"
+          @click="disconnectAccount"
         >
-          Disconnect wallet
+          Disconnect account
         </n-button>
         <n-button style="width: 100%" @click="cancelModal"> Cancel </n-button>
       </n-space>
@@ -37,11 +37,11 @@
 import { web3Accounts, web3Enable } from '@polkadot/extension-dapp'
 import { NButton, NCard, NModal, NSpace } from 'naive-ui'
 
-const walletStore = useWalletStore()
+const accountStore = useAccountStore()
 
 onMounted(async () => {
   await web3Enable('subscaffold dapp')
-  walletStore.setWallets(await web3Accounts())
+  accountStore.setAccounts(await web3Accounts())
 })
 // Modals logic
 const modalState = ref(false)
@@ -54,21 +54,21 @@ const cancelModal = () => {
   modalState.value = false
 }
 
-// Wallets
-const wallets = computed(() => walletStore.wallets)
+// Accounts
+const accounts = computed(() => accountStore.accounts)
 
-const selectWallet = (id: number) => {
-  walletStore.selectWallet(id)
+const selectAccount = (id: number) => {
+  accountStore.selectAccount(id)
   cancelModal()
 }
 
-const disconnectWallet = () => {
-  walletStore.disconnectWallet()
+const disconnectAccount = () => {
+  accountStore.disconnectAccount()
   cancelModal()
 }
 
 const selected = computed(
   () =>
-    `${walletStore.selected?.meta?.source} (${walletStore.selected?.meta?.name})`
+    `${accountStore.selected?.meta?.source} (${accountStore.selected?.meta?.name})`
 )
 </script>
