@@ -29,14 +29,26 @@
         @change="setSourceNode"
       />
 
-      <asset-select
-        v-if="selectedType"
-        :asset="selectedAsset"
-        :transfer-type="selectedType"
-        :selected-node="selectedNode"
-        @clear="clearAsset"
-        @change="setAsset"
-      />
+      <n-form-item v-if="selectedType" label="Select asset">
+        <n-input-group>
+          <n-input-number
+            v-model:value="balance"
+            style="width: 80%"
+            placeholder="Balance"
+            step="0.001"
+            min="0"
+            :precision="3"
+          />
+          <asset-select
+            v-if="selectedType"
+            :asset="selectedAsset"
+            :transfer-type="selectedType"
+            :selected-node="selectedNode"
+            @clear="clearAsset"
+            @change="setAsset"
+          />
+        </n-input-group>
+      </n-form-item>
 
       <destination-node
         v-if="selectedType"
@@ -46,20 +58,16 @@
         @clear="clearDestination"
         @change="(dest) => (selectedDestination = dest)"
       />
+
       <n-form-item v-if="selectedType">
-        <div class="ammount-wrapper">
-          <n-input-number
-            v-model:value="balance"
-            placeholder="Balance"
-            step="0.001"
-            min="0"
-            :precision="3"
-            :disabled="!selectedDestination"
-          />
-          <n-button type="primary" :disabled="!canSend" @click="onSend">
-            Send
-          </n-button>
-        </div>
+        <n-button
+          type="primary"
+          style="width: 100%"
+          :disabled="!canSend"
+          @click="onSend"
+        >
+          Send
+        </n-button>
       </n-form-item>
     </n-form>
   </n-space>
@@ -71,6 +79,7 @@ import {
   NButton,
   NForm,
   NFormItem,
+  NInputGroup,
   NInputNumber,
   NSpace,
 } from 'naive-ui'
@@ -181,5 +190,6 @@ const onSend = () => {
 .ammount-wrapper {
   width: 100%;
   display: flex;
+  gap: 12px;
 }
 </style>

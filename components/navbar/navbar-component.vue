@@ -13,7 +13,6 @@
       />
     </n-space>
     <n-space justify="end" align="center">
-      <layout-select />
       <client-only>
         <wallet-component />
         <template #fallback>
@@ -46,7 +45,6 @@ import type { MenuOption } from 'naive-ui'
 import { NButton, NIcon, NMenu, NSpace } from 'naive-ui'
 import { Component, h, ref } from 'vue'
 import WalletComponent from '@/components/wallet/wallet-component.vue'
-import LayoutSelect from '@/components/utils/layout-select.vue'
 
 const mainStore = useMainStore()
 

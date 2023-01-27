@@ -1,20 +1,18 @@
 <template>
-  <n-form-item label="Select asset">
-    <n-select
-      v-model:value="selectedAsset"
-      :options="assetsOptions"
-      class="asset-select"
-      placeholder="Select asset"
-      :disabled="isDisabled"
-      filterable
-      clearable
-      @clear="$emit('clear')"
-    />
-  </n-form-item>
+  <n-select
+    v-model:value="selectedAsset"
+    :options="assetsOptions"
+    class="asset-select"
+    placeholder="Select asset"
+    :disabled="isDisabled"
+    filterable
+    clearable
+    @clear="$emit('clear')"
+  />
 </template>
 <script lang="ts" setup>
 import { TNode } from '@paraspell/sdk'
-import { NFormItem, NSelect, type SelectOption } from 'naive-ui'
+import { NSelect, type SelectOption } from 'naive-ui'
 import { TransferType } from '~~/stores/AssetStore'
 const $emit = defineEmits(['clear', 'change'])
 
@@ -54,6 +52,6 @@ watch(
 </script>
 <style lang="scss" scoped>
 .asset-select {
-  width: 100%;
+  width: 30%;
 }
 </style>
