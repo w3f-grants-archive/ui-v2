@@ -7,7 +7,7 @@ install:
 
 .PHONY: initialize
 initialize:
-	cd .. && chmod 777 ./ui-v1
+	cd .. && chmod 777 ./ui-v2
 	apt-get update && apt-get upgrade
 	apt install curl npm
 	npm install -g n
@@ -24,7 +24,7 @@ installDockerEngine:
 
 .PHONY: initializemac
 initializemac:
-	cd .. && chmod 777 ./ui-v1
+	cd .. && chmod 777 ./ui-v2
 	brew install curl node@16 npm pnpm docker git openssl make llvm protobuf python@3.9 
 	npm install -g @open-web3/parachain-launch
 
