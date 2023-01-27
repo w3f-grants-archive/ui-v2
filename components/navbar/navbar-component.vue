@@ -1,11 +1,7 @@
 <template>
   <n-space justify="space-between">
     <n-space>
-      <img
-        src="~/assets/images/paraspellLogo.png"
-        alt="paraspell"
-        width="150"
-      />
+      <img src="images/paraspellLogo.png" alt="paraspell" width="150" />
       <n-menu
         v-model:value="activeKey"
         mode="horizontal"

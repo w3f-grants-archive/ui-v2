@@ -1,9 +1,7 @@
 <template>
   <n-config-provider :theme="theme">
     <n-notification-provider>
-      <nuxt-layout name="default-layout">
-        <nuxt-page />
-      </nuxt-layout>
+      <nuxt-page />
     </n-notification-provider>
   </n-config-provider>
 </template>

@@ -1,37 +1,36 @@
 <template>
-  <div class="carousel-wrapper">
-    <n-carousel autoplay class="carousel">
-      <img
-        src="~/assets/images/carousel/diagram.png"
-        alt="diagram"
-        class="carousel-img"
-      />
-      <img
-        src="~/assets/images/carousel/graphimg.png"
-        alt="graphimg"
-        class="carousel-img"
-      />
-      <img
-        src="~/assets/images/carousel/main.png"
-        alt="main"
-        class="carousel-img"
-      />
-      <template #dots="{ total, currentIndex, to }">
-        <ul class="custom-dots">
-          <li
-            v-for="index of total"
-            :key="index"
-            :class="{ ['is-active']: currentIndex === index - 1 }"
-            @click="to(index - 1)"
-          />
-        </ul>
-      </template>
-    </n-carousel>
-  </div>
+  <nuxt-layout name="full-layout">
+    <div class="carousel-wrapper">
+      <n-carousel autoplay class="carousel">
+        <img
+          v-for="img in imgNames"
+          :key="img"
+          :src="`images/carousel/${img}.png`"
+          :alt="`${img}`"
+          class="carousel-img"
+        />
+        <template #dots="{ total, currentIndex, to }">
+          <ul class="custom-dots">
+            <li
+              v-for="index of total"
+              :key="index"
+              :class="{ ['is-active']: currentIndex === index - 1 }"
+              @click="to(index - 1)"
+            />
+          </ul>
+        </template>
+      </n-carousel>
+    </div>
+  </nuxt-layout>
 </template>
 
 <script setup lang="ts">
 import { NCarousel } from 'naive-ui'
+const imgNames = ['diagram', 'graphimg', 'main']
+
+definePageMeta({
+  layout: false,
+})
 </script>
 
 <style scoped lang="scss">
@@ -41,7 +40,6 @@ import { NCarousel } from 'naive-ui'
   justify-content: center;
 }
 .carousel {
-  width: 70%;
   .carousel-img {
     width: 100%;
     object-fit: cover;

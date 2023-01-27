@@ -2,7 +2,7 @@
   <footer>
     <div class="footer-content">
       <div class="footer-logo">
-        <img src="@/assets/images/sub-scaffold.png" alt="Logo" />
+        <img src="images/sub-scaffold.png" alt="Logo" />
       </div>
       <div class="sponsors">
         <p class="heading">Sponsors</p>

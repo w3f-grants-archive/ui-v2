@@ -36,7 +36,6 @@ export const useAssetsStore = defineStore({
      * @param node
      */
     selectNode(node: TNode | null, ptp = false): void {
-      const notificationStore = useNotificationStore()
       const { $paraspell } = useNuxtApp()
       // TODO: Do we want BifrostKusama as Relay chain?
       if (!ptp) {
@@ -46,7 +45,6 @@ export const useAssetsStore = defineStore({
         return
       }
       this.assets = $paraspell.assets.getAssetsObject(node)
-      notificationStore.create('Node selected', `Selected node: ${node}`)
     },
     /**
      * Send a transaction
