@@ -15,12 +15,6 @@
     <n-form>
       <transfer-type-select @change="setTransferType" @clear="clearType" />
 
-      <address-component
-        v-if="selectedType"
-        v-model="destinationAddress"
-        label="Destination address"
-      />
-
       <source-node
         v-if="selectedType === 'PtP'"
         :node="selectedNode"
@@ -57,6 +51,11 @@
         :selected-asset="selectedAsset"
         @clear="clearDestination"
         @change="(dest) => (selectedDestination = dest)"
+      />
+      <address-component
+        v-if="selectedType"
+        v-model="destinationAddress"
+        label="Destination address"
       />
 
       <n-form-item v-if="selectedType">
