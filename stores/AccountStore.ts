@@ -6,14 +6,22 @@ const logger = consola.create({
     tag: 'store::account:',
   },
 })
-
-interface AccountWithID extends InjectedAccountWithMeta {
+export const DEVELOPMENT_ACCOUNTS = [
+  'Alice',
+  'Bob',
+  'Charlie',
+  'Dave',
+  'Eve',
+  'Ferdie',
+] as const
+interface Account extends InjectedAccountWithMeta {
   id: number
+  dev?: boolean
 }
 
 type State = {
-  accounts: AccountWithID[]
-  selected: AccountWithID | null
+  accounts: Account[]
+  selected: Account | null
   idCounter: number
 }
 
@@ -29,10 +37,21 @@ export const useAccountStore = defineStore({
      * Set the list of accounts from the API
      */
     setAccounts(accounts: InjectedAccountWithMeta[]) {
-      this.accounts = accounts.map((account) => ({
-        id: this.idCounter++,
-        ...account,
-      }))
+      this.accounts = [
+        ...accounts.map((acc) => ({
+          id: this.idCounter++,
+          ...acc,
+        })),
+        ...DEVELOPMENT_ACCOUNTS.map((acc) => ({
+          id: this.idCounter++,
+          dev: true,
+          address: '//' + acc,
+          meta: {
+            source: acc,
+            name: acc,
+          },
+        })),
+      ]
     },
     /**
      * Disconnect current account
@@ -44,6 +63,17 @@ export const useAccountStore = defineStore({
      * Set current account
      */
     selectAccount(id: number): void {
+      const selected = this.accounts.find((w) => w.id === id)
+      if (!selected) {
+        logger.error('Cannot locate this account', id, this.accounts)
+        return
+      }
+      this.selected = selected
+    },
+    /**
+     * Set development account
+     */
+    selectDevAccount(id: number): void {
       const selected = this.accounts.find((w) => w.id === id)
       if (!selected) {
         logger.error('Cannot locate this account', id, this.accounts)

@@ -87,7 +87,7 @@ import SourceNode from './source-node.vue'
 import AssetSelect from './asset-select.vue'
 import DestinationNode from './destination-node.vue'
 import TransferTypeSelect from './transfer-type-select.vue'
-import type { TransferType } from '~/stores/AssetStore'
+import type { TransferType } from '~~/stores/AssetStore'
 /// Notification logic
 const notificationStore = useNotificationStore()
 /// Account logic

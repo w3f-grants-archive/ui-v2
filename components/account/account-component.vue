@@ -5,16 +5,27 @@
   <n-modal v-model:show="modalState">
     <n-card
       style="padding: 5px; width: 300px"
-      title="Which account do you want to use?"
+      title="Account selection"
       :bordered="false"
       role="dialog"
       aria-modal="true"
       @close="cancelModal"
     >
       <n-space vertical :size="[10, 20]">
+        <n-divider dashed> Test accounts </n-divider>
+        <n-button
+          v-for="account in devAccounts"
+          :key="account.id"
+          style="width: 100%"
+          type="primary"
+          @click="selectAccount(account.id)"
+        >
+          {{ account.meta.name }}
+        </n-button>
+        <n-divider dashed> Wallet accounts </n-divider>
         <n-button
           v-for="account in accounts"
-          :key="account.meta.name"
+          :key="account.id"
           style="width: 100%"
           type="primary"
           @click="selectAccount(account.id)"
@@ -35,7 +46,7 @@
 </template>
 <script setup lang="ts">
 import { web3Accounts, web3Enable } from '@polkadot/extension-dapp'
-import { NButton, NCard, NModal, NSpace } from 'naive-ui'
+import { NButton, NCard, NModal, NSpace, NDivider } from 'naive-ui'
 
 const accountStore = useAccountStore()
 
@@ -55,7 +66,10 @@ const cancelModal = () => {
 }
 
 // Accounts
-const accounts = computed(() => accountStore.accounts)
+const accounts = computed(() => accountStore.accounts.filter((acc) => !acc.dev))
+const devAccounts = computed(() =>
+  accountStore.accounts.filter((acc) => acc.dev)
+)
 
 const selectAccount = (id: number) => {
   accountStore.selectAccount(id)
@@ -67,8 +81,9 @@ const disconnectAccount = () => {
   cancelModal()
 }
 
-const selected = computed(
-  () =>
-    `${accountStore.selected?.meta?.source} (${accountStore.selected?.meta?.name})`
+const selected = computed(() =>
+  accountStore.selected?.dev
+    ? accountStore.selected?.meta.name
+    : `${accountStore.selected?.meta.source} (${accountStore.selected?.meta.name})`
 )
 </script>
