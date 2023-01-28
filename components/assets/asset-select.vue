@@ -34,9 +34,31 @@ const isDisabled = computed(() => {
   return false
 })
 
-const assetsOptions = computed<SelectOption[]>(() =>
-  availibleAssets.value.map(({ symbol, id }) => ({ label: symbol, value: id }))
-)
+const assetsOptions = computed<SelectOption[]>(() => {
+  const all = availibleAssets.value.map(({ symbol, id }) => ({
+    label: symbol,
+    value: id,
+  }))
+  const [availible, unavailible] = splitAssetsByAvailibility(
+    all,
+    SUPPORTED_ASSETS
+  )
+
+  return [
+    {
+      type: 'group',
+      label: 'Availible assets',
+      key: 'availible',
+      children: availible,
+    },
+    {
+      type: 'group',
+      label: 'Unavailable assets',
+      key: 'unavailable',
+      children: unavailible,
+    },
+  ]
+})
 const selectedAsset = ref<number | null>(null)
 watch(
   () => props.asset,

@@ -7,7 +7,7 @@
       placeholder="Select node"
       filterable
       clearable
-      @update:value="assetsStore.selectNode(selectedNode as TNode, ptp)"
+      @update:value="assetsStore.selectNode(selectedNode as TNode)"
       @clear="$emit('clear')"
     />
   </n-form-item>
@@ -22,7 +22,6 @@ import {
 } from 'naive-ui'
 
 const props = defineProps<{
-  ptp: boolean
   node: TNode | null
 }>()
 const $emit = defineEmits(['change', 'clear'])

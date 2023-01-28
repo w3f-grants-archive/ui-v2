@@ -3,6 +3,7 @@ export default defineNuxtConfig({
   typescript: {
     strict: true,
   },
+  ssr: false,
   runtimeConfig: {
     apiSecret: '123',
     public: {

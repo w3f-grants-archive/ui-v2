@@ -16,9 +16,8 @@
       <transfer-type-select @change="setTransferType" @clear="clearType" />
 
       <source-node
-        v-if="selectedType === 'PtP'"
+        v-if="selectedType && selectedType !== 'RtP'"
         :node="selectedNode"
-        :ptp="selectedType === 'PtP'"
         @clear="clearNode"
         @change="setSourceNode"
       />
@@ -30,7 +29,7 @@
             style="width: 80%"
             placeholder="Balance"
             step="0.001"
-            min="0"
+            min="0.1"
             :precision="3"
           />
           <asset-select
@@ -45,7 +44,7 @@
       </n-form-item>
 
       <destination-node
-        v-if="selectedType"
+        v-if="selectedType && selectedType !== 'PtR'"
         :destination="selectedDestination"
         :selected-node="selectedNode"
         :selected-asset="selectedAsset"
@@ -88,6 +87,7 @@ import AssetSelect from './asset-select.vue'
 import DestinationNode from './destination-node.vue'
 import TransferTypeSelect from './transfer-type-select.vue'
 import type { TransferType } from '~~/stores/AssetStore'
+import { SupportedNode } from '~~/utils/nodes'
 /// Notification logic
 const notificationStore = useNotificationStore()
 /// Account logic
@@ -129,10 +129,8 @@ const balance = ref(0)
 watch(
   () => selectedType.value,
   (val) => {
-    if (val !== 'PtP') {
-      selectedNode.value = null
-      assetsStore.selectNode(null)
-    }
+    selectedNode.value = null
+    assetsStore.selectNode(null, val !== 'RtP')
   }
 )
 
@@ -142,7 +140,7 @@ const clearType = () => {
   clearNode()
 }
 const clearNode = () => {
-  assetsStore.selectNode(null, selectedType.value === 'PtP')
+  assetsStore.selectNode(null, selectedType.value !== 'RtP')
   selectedAsset.value = null
   clearAsset()
 }
@@ -151,7 +149,7 @@ const clearAsset = () => {
   clearDestination()
 }
 const clearDestination = () => {
-  balance.value = 0
+  balance.value = 0.1
 }
 
 // Send logic
@@ -159,9 +157,10 @@ const canSend = computed(
   () =>
     hasAccount.value &&
     selectedType.value &&
-    selectedNode.value &&
+    (selectedNode.value || selectedType.value !== 'PtP') &&
+    (selectedDestination || selectedType.value !== 'PtR') &&
     selectedAsset.value &&
-    balance.value > 0
+    balance.value >= 0.1
 )
 const onSend = () => {
   const asset = assetsStore.assetOptions.find(
@@ -175,8 +174,9 @@ const onSend = () => {
     balance.value,
     asset,
     selectedType.value!,
-    selectedNode.value!,
-    selectedDestination.value!
+    selectedNode.value! as SupportedNode,
+    selectedDestination.value! as SupportedNode,
+    destinationAddress.value
   )
 }
 </script>

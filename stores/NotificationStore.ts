@@ -1,5 +1,6 @@
 import consola from 'consola'
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const logger = consola.create({
   defaults: {
     tag: 'store::notification:',
@@ -51,7 +52,20 @@ export const useNotificationStore = defineStore({
           duration,
         },
       ]
-      logger.info(`creating notification with ID: ${id}`)
+      // switch (type) {
+      //   case NotificationType.Info:
+      //     logger.info(`creating info notification with ID: ${id}`)
+      //     break
+      //   case NotificationType.Warning:
+      //     logger.warn(`creating warning notification with ID: ${id}`)
+      //     break
+      //   case NotificationType.Success:
+      //     logger.success(`creating success notification with ID: ${id}`)
+      //     break
+      //   case NotificationType.Error:
+      //     logger.error(`creating error notification with ID: ${id}`)
+      //     break
+      // }
     },
     remove(id: number) {
       this.notifications = this.notifications.filter((n) => n.id === id)
