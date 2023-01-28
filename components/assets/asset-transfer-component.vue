@@ -5,8 +5,8 @@
       <code>{{ SUPPORTED_NODES.join(', ') }}</code>
     </n-alert>
     <n-alert v-if="!hasAccount" title="Select account" type="error">
-      You didn't select any account. Please select your account to continue with
-      teleport process.
+      You haven't selected any account. Please select your account to continue
+      with teleport process.
     </n-alert>
     <n-alert v-else title="Your account" type="info">
       Your current account: &nbsp;

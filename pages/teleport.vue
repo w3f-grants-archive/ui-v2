@@ -3,7 +3,7 @@
     <n-space vertical>
       <n-card>
         <template #header>
-          <h1>Teleport</h1>
+          <h1 style="text-align: center">Teleport</h1>
           <n-divider />
         </template>
         <asset-transfer-component />

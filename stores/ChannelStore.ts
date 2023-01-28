@@ -42,23 +42,9 @@ export const useChannelStore = defineStore({
      * Method to load availible parachains into the state
      */
     async loadParachains(): Promise<void> {
-      const notificationStore = useNotificationStore()
-      let api = null
-      try {
-        const wsProvider = new WsProvider('ws://127.0.0.1:9944')
-        api = await ApiPromise.create({ provider: wsProvider })
-      } catch (e) {
-        logger.error('Cant connect to api')
-      }
-      if (!api) {
-        this.apiConnected = false
-        notificationStore.create(
-          'Error',
-          'Cant connect to API',
-          NotificationType.Error
-        )
-        return
-      }
+      const wsProvider = new WsProvider('ws://127.0.0.1:9944')
+      const api = await ApiPromise.create({ provider: wsProvider })
+      if (!api) return this.handleApiError()
       this.apiConnected = true
 
       // Call to query parachains connected to Relay chain
@@ -86,14 +72,10 @@ export const useChannelStore = defineStore({
      * @param destination Destination chain ID
      */
     async openChannel(source: number, destination: number): Promise<void> {
-      let api = null
-      try {
-        const wsProvider = new WsProvider('ws://127.0.0.1:9944')
-        api = await ApiPromise.create({ provider: wsProvider })
-      } catch (e) {
-        logger.error('Cant connect to api')
-      }
       const notificationStore = useNotificationStore()
+      const wsProvider = new WsProvider('ws://127.0.0.1:9944')
+      const api = await ApiPromise.create({ provider: wsProvider })
+      if (!api) return this.handleApiError()
       if (this.hasActiveOpening) {
         notificationStore.create(
           'Error',
@@ -103,16 +85,6 @@ export const useChannelStore = defineStore({
         return
       }
       logger.success(`Opening channel: ${source}<->${destination}`)
-      if (!api) {
-        this.apiConnected = false
-        logger.error('Api is not configured yet')
-        notificationStore.create(
-          'Error',
-          'Api is not configured yet',
-          NotificationType.Error
-        )
-        return
-      }
       this.apiConnected = true
       const keyring = new Keyring({ type: 'sr25519' })
       const alice = keyring.addFromUri('//Alice', { name: 'Alice default' })
@@ -211,23 +183,9 @@ export const useChannelStore = defineStore({
      * Method to load active channels into the state
      */
     async loadChannels(): Promise<void> {
-      const notificationStore = useNotificationStore()
-      let api = null
-      try {
-        const wsProvider = new WsProvider('ws://127.0.0.1:9944')
-        api = await ApiPromise.create({ provider: wsProvider })
-      } catch (e) {
-        logger.error('Cant connect to api')
-      }
-      if (!api) {
-        this.apiConnected = false
-        notificationStore.create(
-          'Error',
-          'Cant connect to API',
-          NotificationType.Error
-        )
-        return
-      }
+      const wsProvider = new WsProvider('ws://127.0.0.1:9944')
+      const api = await ApiPromise.create({ provider: wsProvider })
+      if (!api) return this.handleApiError()
       this.apiConnected = true
       const channels = await api.query.hrmp.hrmpChannels.entries()
       for (const channel in channels) {
@@ -250,7 +208,10 @@ export const useChannelStore = defineStore({
       destination: number
     ): Promise<void> {
       const notificationStore = useNotificationStore()
-
+      const wsProvider = new WsProvider('ws://127.0.0.1:9944')
+      const api = await ApiPromise.create({ provider: wsProvider })
+      if (!api) return this.handleApiError()
+      this.apiConnected = true
       if (this.hasActiveClosing) {
         notificationStore.create(
           'Error',
@@ -259,23 +220,6 @@ export const useChannelStore = defineStore({
         )
         return
       }
-      let api = null
-      try {
-        const wsProvider = new WsProvider('ws://127.0.0.1:9944')
-        api = await ApiPromise.create({ provider: wsProvider })
-      } catch (e) {
-        logger.error('Cant connect to api')
-      }
-      if (!api) {
-        this.apiConnected = false
-        notificationStore.create(
-          'Error',
-          'Cant connect to API',
-          NotificationType.Error
-        )
-        return
-      }
-      this.apiConnected = true
       const keyring = new Keyring({ type: 'sr25519' })
       const alice = keyring.addFromUri('//Alice', { name: 'Alice default' })
       this.hasActiveClosing = true
@@ -333,6 +277,19 @@ export const useChannelStore = defineStore({
       )
       this.channels[destination] = this.channels[destination]?.filter(
         (id) => id !== source
+      )
+    },
+
+    /**
+     * Handler for loosing connection with API
+     */
+    handleApiError() {
+      const notificationStore = useNotificationStore()
+      this.apiConnected = false
+      notificationStore.create(
+        'Error',
+        'Cant connect to API',
+        NotificationType.Error
       )
     },
   },

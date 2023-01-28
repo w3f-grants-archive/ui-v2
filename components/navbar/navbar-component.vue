@@ -19,7 +19,7 @@
       </client-only>
       <client-only>
         <dark-mode
-          v-if="mainStore.darkTheme"
+          v-if="darkTheme"
           class="themeIcon"
           @click="mainStore.changeTheme()"
         />
@@ -47,6 +47,8 @@ const mainStore = useMainStore()
 function renderIcon(icon: Component) {
   return () => h(NIcon, null, { default: () => h(icon) })
 }
+
+const darkTheme = computed(() => mainStore.darkTheme)
 
 const menuOptions: MenuOption[] = [
   {
@@ -95,16 +97,37 @@ const menuOptions: MenuOption[] = [
         'XYK'
       ),
     key: 'xyk',
+    icon: () =>
+      h(
+        'i',
+        {
+          role: 'icon',
+          class: 'n-icon',
+          style: '--n-bezier:cubic-bezier(0.4, 0, 0.2, 1);',
+        },
+        h('img', {
+          src: darkTheme.value
+            ? 'images/bsx-ico.svg'
+            : 'images/bsx-ico-dark.svg',
+          alt: 'bsx-icon',
+          class: 'bsx-icon',
+        })
+      ),
   },
 ]
 
 const activeKey = ref<string | null>(null)
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .themeIcon {
   width: 30px;
   cursor: pointer;
   margin-right: 5px;
+}
+
+.bsx-icon {
+  width: 17px;
+  height: 17px;
 }
 </style>
