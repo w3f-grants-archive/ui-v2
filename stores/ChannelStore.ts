@@ -19,7 +19,6 @@ export interface Parachain {
 type State = {
   parachains: Record<number, TNode>
   channels: Record<number, Array<number>>
-  hasActiveOpenning: boolean
   hasActiveClosing: boolean
   sourceInformed: boolean
   destinationInformed: boolean
@@ -34,7 +33,6 @@ export const useChannelStore = defineStore({
     channels: [],
     apiConnected: false,
     hasActiveClosing: false,
-    hasActiveOpenning: false,
     sourceInformed: false,
     destinationInformed: false,
     closingInformed: false,
@@ -96,7 +94,7 @@ export const useChannelStore = defineStore({
         logger.error('Cant connect to api')
       }
       const notificationStore = useNotificationStore()
-      if (this.hasActiveOpenning) {
+      if (this.hasActiveOpening) {
         notificationStore.create(
           'Error',
           'There is currently one channel opening, please wait',
@@ -119,7 +117,6 @@ export const useChannelStore = defineStore({
       const keyring = new Keyring({ type: 'sr25519' })
       const alice = keyring.addFromUri('//Alice', { name: 'Alice default' })
       // API call used to open first HRMP channel
-      this.hasActiveOpenning = true
       Builder(api)
         .from(this.parachains[source])
         .to(this.parachains[destination])
@@ -141,6 +138,73 @@ export const useChannelStore = defineStore({
         .signAndSend(alice, (res) =>
           this.handleChannelOpening(res, false, source, destination)
         )
+    },
+
+    /**
+     * Method to handle chain responses when opening channel
+     * @param result Result from chain
+     * @param isSource Boolean to dermine what side of handler is this
+     * @param source Source chain ID
+     * @param destination Destination chain ID
+     */
+    handleChannelOpening(
+      { status, txHash }: SubmittableResult,
+      isSource: boolean,
+      source: number,
+      destination: number
+    ): void {
+      const notificationStore = useNotificationStore()
+      if (!this.sourceInformed && isSource) {
+        this.sourceInformed = true
+        notificationStore.create(
+          `Openning source channel`,
+          `You will get notified about channel status soon. Transaction hash is ${txHash.toHex()}`
+        )
+      }
+      if (!this.destinationInformed && !isSource) {
+        this.destinationInformed = true
+        notificationStore.create(
+          `Openning destination channel`,
+          `You will get notified about channel status soon. Transaction hash is ${txHash.toHex()}`
+        )
+      }
+      if (status.isFinalized) {
+        if (isSource) {
+          this.sourceInformed = false
+        } else {
+          this.destinationInformed = false
+        }
+        if (!this.hasActiveOpening) {
+          this.addNewChannel(source, destination)
+        }
+        logger.success(`${isSource ? 'Source' : 'Destination'} channel opened`)
+        notificationStore.create(
+          `${isSource ? 'Source' : 'Destination'} channel opened`,
+          `${isSource ? 'Source' : 'Destination'} channel is opened` +
+            `, it might take a few seconds to appear in close channel screen.`,
+          NotificationType.Success
+        )
+      }
+    },
+
+    /**
+     * Method to add new channel to list of active channels
+     * @param source Source chain ID
+     * @param destination Destination chain ID
+     */
+    addNewChannel(source: number, destination: number): void {
+      if (!this.channels[source]) {
+        this.channels[source] = []
+      }
+      if (
+        this.channels[source]?.includes(destination) ||
+        this.channels[destination]?.includes(source)
+      ) {
+        logger.warn('This channel is already registered')
+        return
+      }
+      this.channels[source].push(destination)
+      this.channels = { ...this.channels }
     },
 
     /**
@@ -174,72 +238,6 @@ export const useChannelStore = defineStore({
         }
         this.addNewChannel(era.sender.words[0], era.recipient.words[0])
       }
-    },
-
-    /**
-     * Method to handle chain responses when opening channel
-     * @param result Result from chain
-     * @param isSource Boolean to dermine what side of handler is this
-     * @param source Source chain ID
-     * @param destination Destination chain ID
-     */
-    handleChannelOpening(
-      { status, txHash }: SubmittableResult,
-      isSource: boolean,
-      source: number,
-      destination: number
-    ): void {
-      const notificationStore = useNotificationStore()
-      if (!this.sourceInformed && isSource) {
-        this.sourceInformed = true
-        notificationStore.create(
-          `Openning source channel`,
-          `You will get notified about channel status soon. Transaction hash is ${txHash.toHex()}`
-        )
-      }
-      if (!this.destinationInformed && !isSource) {
-        this.destinationInformed = true
-        notificationStore.create(
-          `Openning destination channel`,
-          `You will get notified about channel status soon. Transaction hash is ${txHash.toHex()}`
-        )
-      }
-      if (status.isFinalized) {
-        this.addNewChannel(source, destination)
-        this.hasActiveOpenning = false
-        if (isSource) {
-          this.sourceInformed = false
-        } else {
-          this.destinationInformed = false
-        }
-        logger.success(`${isSource ? 'Source' : 'Destination'} channel opened`)
-        notificationStore.create(
-          `${isSource ? 'Source' : 'Destination'} channel opened`,
-          `${isSource ? 'Source' : 'Destination'} channel is opened` +
-            `, it might take a few seconds to appear in close channel screen.`,
-          NotificationType.Success
-        )
-      }
-    },
-
-    /**
-     * Method to add new channel to list of active channels
-     * @param source Source chain ID
-     * @param destination Destination chain ID
-     */
-    addNewChannel(source: number, destination: number): void {
-      if (!this.channels[source]) {
-        this.channels[source] = []
-      }
-      if (
-        this.channels[source]?.includes(destination) ||
-        this.channels[destination]?.includes(source)
-      ) {
-        logger.warn('This channel is already registered')
-        return
-      }
-      this.channels[source].push(destination)
-      this.channels = { ...this.channels }
     },
 
     /**
@@ -338,7 +336,10 @@ export const useChannelStore = defineStore({
       )
     },
   },
-  getters: {},
+  getters: {
+    hasActiveOpening: (state) =>
+      state.sourceInformed || state.destinationInformed,
+  },
 })
 
 if (import.meta.hot) {

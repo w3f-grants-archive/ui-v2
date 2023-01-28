@@ -2,16 +2,29 @@
   <nuxt-layout name="full-layout">
     <n-grid :cols="2" x-gap="24">
       <n-gi>
-        <open-connection />
+        <n-card size="large">
+          <template #header>
+            <h1 style="text-align: center">Open channel</h1>
+            <n-divider />
+          </template>
+          <open-connection />
+        </n-card>
       </n-gi>
       <n-gi>
-        <close-connection />
+        <n-card size="large">
+          <template #header>
+            <h1 style="text-align: center">Active channels</h1>
+            <n-divider />
+          </template>
+          <close-connection />
+        </n-card>
       </n-gi>
     </n-grid>
+    <div class="filler" />
   </nuxt-layout>
 </template>
 <script setup lang="ts">
-import { NGrid, NGi } from 'naive-ui'
+import { NGrid, NGi, NCard, NDivider } from 'naive-ui'
 import OpenConnection from '~/components/channels/open-connection.vue'
 import CloseConnection from '~/components/channels/close-connection.vue'
 definePageMeta({
@@ -23,3 +36,8 @@ onMounted(async () => {
   await channelStore.loadChannels()
 })
 </script>
+<style lang="scss" scoped>
+.filler {
+  height: 45vh;
+}
+</style>

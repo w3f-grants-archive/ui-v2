@@ -1,8 +1,13 @@
 <template>
   <nuxt-layout name="default-layout">
-    <h1>Teleport</h1>
     <n-space vertical>
-      <asset-transfer-component />
+      <n-card>
+        <template #header>
+          <h1>Teleport</h1>
+          <n-divider />
+        </template>
+        <asset-transfer-component />
+      </n-card>
     </n-space>
     <n-space vertical>
       <span class="filler" />
@@ -11,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { NSpace } from 'naive-ui'
+import { NSpace, NCard, NDivider } from 'naive-ui'
 import AssetTransferComponent from '~~/components/assets/asset-transfer-component.vue'
 definePageMeta({
   layout: false,

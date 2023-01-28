@@ -39,7 +39,7 @@ export const useNotificationStore = defineStore({
       title: string,
       message = '',
       type: NotificationType = NotificationType.Info,
-      duration = 2000
+      duration = 5000
     ) {
       const id = this.idCounter++
       this.notifications = [

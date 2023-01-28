@@ -1,13 +1,13 @@
 <template>
-  <n-space vertical align="center">
-    <h1>Open channel</h1>
-  </n-space>
   <n-form>
     <n-form-item label="Select source">
       <n-select
         v-if="chainsLoaded"
         v-model:value="sourceChain"
+        :disabled="isLoading"
         :options="parachainSourceOptions"
+        filterable
+        clearable
       />
       <n-skeleton v-else size="medium" :sharp="false" />
     </n-form-item>
@@ -15,7 +15,10 @@
       <n-select
         v-if="chainsLoaded"
         v-model:value="destinationChain"
+        :disabled="isLoading"
         :options="parachainDestinationOptions"
+        filterable
+        clearable
       />
       <n-skeleton v-else size="medium" :sharp="false" />
     </n-form-item>
@@ -24,6 +27,7 @@
       type="primary"
       style="width: 100%"
       :disabled="!canOpenChannel"
+      :loading="isLoading"
       @click="openChannel"
     >
       Open
@@ -39,7 +43,6 @@ import {
   NFormItem,
   NButton,
   NSkeleton,
-  NSpace,
 } from 'naive-ui'
 
 const channelStore = useChannelStore()
@@ -55,8 +58,13 @@ const availibleChains = computed(() =>
   }))
 )
 
-const sourceChain = ref<number | null>()
-const destinationChain = ref<number | null>()
+const sourceChain = ref<number | null>(null)
+const destinationChain = ref<number | null>(null)
+
+const doesChannelExists = (source: number, destination: number | null) =>
+  destination &&
+  (activeChannels.value[source]?.includes(destination) ||
+    activeChannels.value[destination]?.includes(source))
 
 /**
  * Filter out already selected chain and opened connection
@@ -66,10 +74,18 @@ const parachainSourceOptions = computed<SelectOption[]>(() =>
     .filter(
       (chain) =>
         chain.id !== destinationChain.value &&
-        !activeChannels.value[chain.id]?.includes(destinationChain.value!) &&
-        !activeChannels.value[destinationChain.value!]?.includes(chain.id)
+        !doesChannelExists(chain.id, destinationChain.value)
     )
     .map((val) => ({ label: val.name, value: val.id }))
+)
+
+watch(
+  () => parachainSourceOptions.value,
+  (options) => {
+    if (!options.find((el) => el.value === sourceChain.value)) {
+      sourceChain.value = null
+    }
+  }
 )
 
 /**
@@ -80,16 +96,32 @@ const parachainDestinationOptions = computed<SelectOption[]>(() =>
     .filter(
       (chain) =>
         chain.id !== sourceChain.value &&
-        !activeChannels.value[chain.id]?.includes(sourceChain.value!) &&
-        !activeChannels.value[sourceChain.value!]?.includes(chain.id)
+        !doesChannelExists(chain.id, sourceChain.value)
     )
     .map((val) => ({ label: val.name, value: val.id }))
+)
+
+watch(
+  () => parachainDestinationOptions.value,
+  (options) => {
+    if (!options.find((el) => el.value === destinationChain.value)) {
+      destinationChain.value = null
+    }
+  }
 )
 /**
  * Check if source and destination was selected
  */
 const canOpenChannel = computed(
-  () => sourceChain.value && destinationChain.value
+  () =>
+    sourceChain.value &&
+    destinationChain.value &&
+    !channelStore.hasActiveClosing &&
+    !channelStore.hasActiveOpening
+)
+
+const isLoading = computed(
+  () => channelStore.hasActiveClosing || channelStore.hasActiveOpening
 )
 const openChannel = () => {
   channelStore.openChannel(sourceChain.value!, destinationChain.value!)
