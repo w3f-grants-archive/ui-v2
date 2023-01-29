@@ -22,10 +22,3 @@ definePageMeta({
   layout: false,
 })
 </script>
-
-<style scoped lang="scss">
-.filler {
-  min-height: 35vh;
-  display: block;
-}
-</style>

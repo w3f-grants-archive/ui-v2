@@ -36,8 +36,3 @@ onMounted(async () => {
   await channelStore.loadChannels()
 })
 </script>
-<style lang="scss" scoped>
-.filler {
-  height: 45vh;
-}
-</style>

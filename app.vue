@@ -17,3 +17,9 @@ const theme = computed<GlobalTheme | null>(() =>
   mainStore.darkTheme ? darkTheme : null
 )
 </script>
+<style lang="scss">
+.filler {
+  min-height: 35vh;
+  display: block;
+}
+</style>

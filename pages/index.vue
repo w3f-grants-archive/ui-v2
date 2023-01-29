@@ -35,9 +35,6 @@ definePageMeta({
 </script>
 
 <style scoped lang="scss">
-.filler {
-  height: 40vh;
-}
 .carousel-wrapper {
   width: 100%;
   display: flex;
