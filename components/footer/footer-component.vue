@@ -27,12 +27,6 @@
       </div>
       <div class="socials">
         <p class="heading">Socials</p>
-        <div class="socials-icons">
-          <a href=""><TelegramRound /></a>
-          <a href=""><DiscordRound /></a>
-          <a href=""><FacebookRound /></a>
-          <a href=""><RedditRound /></a>
-        </div>
       </div>
     </div>
     <div class="footer-separator">
