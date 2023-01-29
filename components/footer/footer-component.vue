@@ -36,13 +36,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  DiscordRound,
-  FacebookRound,
-  OpenInNewRound,
-  RedditRound,
-  TelegramRound,
-} from '@vicons/material'
+import { OpenInNewRound } from '@vicons/material'
 </script>
 
 <style lang="scss">
