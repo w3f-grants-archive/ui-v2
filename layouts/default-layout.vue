@@ -2,8 +2,8 @@
   <n-layout>
     <navbar-component />
     <n-layout-content content-style="padding: 24px;">
-      <n-grid x-gap="12" :cols="3">
-        <n-gi offset="1">
+      <n-grid x-gap="12" cols="1 l:3" responsive="screen">
+        <n-gi offset="0 l:1">
           <slot />
         </n-gi>
         <n-gi>

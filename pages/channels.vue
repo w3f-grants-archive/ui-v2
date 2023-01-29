@@ -1,6 +1,6 @@
 <template>
   <nuxt-layout name="full-layout">
-    <n-grid :cols="2" x-gap="24">
+    <n-grid cols="1 m:2" x-gap="24" y-gap="24" responsive="screen">
       <n-gi>
         <n-card size="large">
           <template #header>

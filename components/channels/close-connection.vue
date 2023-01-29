@@ -1,6 +1,11 @@
 <template>
   <n-space v-if="chainsLoaded" vertical align="center" :wrap-item="false">
-    <n-alert v-if="!hasChannels" title="No channels" type="warning">
+    <n-alert
+      v-if="!hasChannels"
+      style="width: 100%"
+      title="No channels"
+      type="warning"
+    >
       There are currently no opened channels.
     </n-alert>
     <n-button

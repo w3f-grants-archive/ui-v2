@@ -6,6 +6,7 @@
         v-model:value="activeKey"
         mode="horizontal"
         :options="menuOptions"
+        colapsed
       />
     </n-space>
     <n-space justify="end" align="center">
@@ -115,7 +116,9 @@ const menuOptions: MenuOption[] = [
       ),
   },
 ]
-
+// onMounted(() => {
+//   window.addEventListener('resize', this.myEventHandler)
+// })
 const activeKey = ref<string | null>(null)
 </script>
 
