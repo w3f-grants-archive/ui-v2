@@ -30,6 +30,7 @@
             placeholder="Balance"
             step="0.001"
             min="0.1"
+            :disabled="isBalanceDisabled"
             :precision="3"
           />
           <asset-select
@@ -125,12 +126,16 @@ const setAsset = (assetId: number) => {
 const selectedDestination = ref<TNode | null>(null)
 
 const balance = ref(0)
+const isBalanceDisabled = computed(() => {
+  if (selectedType.value !== 'RtP') return !selectedNode.value
+  return false
+})
 
 watch(
   () => selectedType.value,
   (val) => {
     selectedNode.value = null
-    assetsStore.selectNode(null, val !== 'RtP')
+    assetsStore.selectNode(null, val === 'RtP')
   }
 )
 
@@ -140,7 +145,7 @@ const clearType = () => {
   clearNode()
 }
 const clearNode = () => {
-  assetsStore.selectNode(null, selectedType.value !== 'RtP')
+  assetsStore.selectNode(null, selectedType.value === 'RtP')
   selectedAsset.value = null
   clearAsset()
 }

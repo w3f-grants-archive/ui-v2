@@ -1,6 +1,6 @@
 <template>
-  <n-grid :span="24" :x-gap="24">
-    <n-form-item-gi label="Send to:" :span="6">
+  <n-grid cols="1 l:24" x-gap="5" responsive="screen">
+    <n-form-item-gi label="Send to:" span="1 l:6">
       <n-switch v-model:value="forMeSelect">
         <template #unchecked> Address </template>
         <template #unchecked-icon>
@@ -14,7 +14,7 @@
     </n-form-item-gi>
     <n-form-item-gi
       v-if="!forMeSelect"
-      :span="18"
+      span="1 l:18"
       :label="label"
       :validation-status="getValidationStatus(error)"
       :feedback="error ? error : undefined"
@@ -22,8 +22,7 @@
       <n-input
         v-model:value="address"
         placeholder="Address"
-        autosize
-        style="min-width: 100%"
+        style="width: 100%"
         @change="handleInput"
       />
     </n-form-item-gi>

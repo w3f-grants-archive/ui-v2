@@ -2,9 +2,9 @@
   "configurations": [
     {
       "type": "chrome",
-      "name": "http://localhost:3000/channels",
+      "name": "Paraspell debug",
       "request": "launch",
-      "url": "http://localhost:3000/channels"
+      "url": "http://localhost:3000"
     }
   ]
 }

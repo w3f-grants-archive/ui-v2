@@ -30,7 +30,7 @@ const availibleAssets = computed(() =>
 )
 
 const isDisabled = computed(() => {
-  if (props.transferType === 'PtP') return !props.selectedNode
+  if (props.transferType !== 'RtP') return !props.selectedNode
   return false
 })
 
