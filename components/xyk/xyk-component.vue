@@ -9,51 +9,40 @@
         <n-select
           v-model:value="selectedAction"
           :options="actions"
+          :disabled="transactionRunning"
           @update:value="clear"
         />
       </n-form-item>
-      <n-form-item
-        v-if="hasAssetA"
-        :label="
-          selectedAction === 4 || selectedAction === 5
-            ? 'Asset you buy'
-            : 'Asset A'
-        "
-      >
-        <n-input v-model:value="assetA" placeholder="Asset ID" />
+      <n-form-item v-if="hasAssetA" :label="assetALabel">
+        <n-input
+          v-model:value="assetA"
+          :allow-input="onlyAllowNumber"
+          :disabled="transactionRunning"
+          placeholder="Asset ID"
+        />
       </n-form-item>
-      <n-form-item
-        v-if="hasAssetB"
-        :label="
-          selectedAction === 4 || selectedAction === 5
-            ? 'Asset you sell'
-            : 'Asset B'
-        "
-      >
-        <n-input v-model:value="assetB" placeholder="Asset ID" />
+      <n-form-item v-if="hasAssetB" :label="assetBLabel">
+        <n-input
+          v-model:value="assetB"
+          :allow-input="onlyAllowNumber"
+          :disabled="transactionRunning"
+          placeholder="Asset ID"
+        />
       </n-form-item>
-      <n-form-item
-        v-if="hasAmountA"
-        :label="
-          selectedAction === 4 || selectedAction === 5
-            ? 'Amout you want to buy'
-            : 'Amount A'
-        "
-      >
+      <n-form-item v-if="hasAmountA" :label="amountALabel">
         <n-input-number
           v-model:value="amountA"
+          :disabled="transactionRunning"
           style="width: 100%"
           placeholder="Amount"
           clearable
           min="0"
         />
       </n-form-item>
-      <n-form-item
-        v-if="hasAmountB"
-        :label="selectedAction === 5 ? 'Amout you want to sell' : 'Amount B'"
-      >
+      <n-form-item v-if="hasAmountB" :label="amountBLabel">
         <n-input-number
           v-model:value="amountB"
+          :disabled="transactionRunning"
           style="width: 100%"
           placeholder="Amount"
           clearable
@@ -63,8 +52,9 @@
       <n-form-item v-if="hasLimit" :label="limitLabel">
         <n-input-number
           v-model:value="limit"
+          :disabled="transactionRunning"
           style="width: 100%"
-          placeholder="Limit"
+          placeholder="Amount"
           clearable
           min="0"
         />
@@ -72,16 +62,18 @@
       <n-checkbox
         v-if="hasDiscount"
         :checked="discount"
+        :disabled="transactionRunning"
         style="margin-left: 10px"
         @update:checked="(v) => (discount = v)"
       >
         Do you want to apply discount if possible?
       </n-checkbox>
-      <n-form-item v-if="selectedAction">
+      <n-form-item v-if="selectedAction !== null">
         <n-button
           type="primary"
           style="width: 100%"
           icon-placement="right"
+          :loading="transactionRunning"
           :disabled="!canSend"
           @click="send"
         >
@@ -117,32 +109,79 @@ const account = computed(() => accountStore.selected)
 
 const hasAccount = computed(() => !!account.value)
 
+enum XykActions {
+  CREATE_POOL,
+  ADD_LIQUIDITY,
+  REMOVE_LIQUIDITY,
+  BUY,
+  SELL,
+}
+
+// Actions
 const actions = [
-  { value: 1, label: 'Create pool' },
-  { value: 2, label: 'Add liquidity' },
-  { value: 3, label: 'Remove liquidity' },
-  { value: 4, label: 'Buy' },
-  { value: 5, label: 'Sell' },
+  { value: XykActions.CREATE_POOL, label: 'Create pool' },
+  { value: XykActions.ADD_LIQUIDITY, label: 'Add liquidity' },
+  { value: XykActions.REMOVE_LIQUIDITY, label: 'Remove liquidity' },
+  { value: XykActions.BUY, label: 'Buy' },
+  { value: XykActions.SELL, label: 'Sell' },
 ]
 
-const selectedAction = ref<number | null>(null)
+const selectedAction = ref<XykActions | null>(null)
 
-const hasAssetA = computed(() => selectedAction.value)
+// Assets logic
+
+const onlyAllowNumber = (value: string) => !value || /^\d+$/.test(value)
+
+// Asset A
+const hasAssetA = computed(() => selectedAction.value !== null)
+const assetALabel = computed(() =>
+  selectedAction.value === XykActions.BUY ||
+  selectedAction.value === XykActions.SELL
+    ? 'Asset you buy'
+    : 'Asset A'
+)
 const assetA = ref<string>('')
 
-const hasAssetB = computed(() => selectedAction.value)
+// Asset B
+const hasAssetB = computed(() => selectedAction.value !== null)
+const assetBLabel = computed(() =>
+  selectedAction.value === XykActions.BUY ||
+  selectedAction.value === XykActions.SELL
+    ? 'Asset you sell'
+    : 'Asset B'
+)
 const assetB = ref<string>('')
 
+// Amount A
 const hasAmountA = computed(
-  () => selectedAction.value && selectedAction.value !== 3
+  () =>
+    selectedAction.value !== null &&
+    selectedAction.value !== XykActions.REMOVE_LIQUIDITY
+)
+const amountALabel = computed(() =>
+  selectedAction.value === XykActions.BUY ||
+  selectedAction.value === XykActions.SELL
+    ? 'Amout you want to buy'
+    : 'Amount of asset A'
 )
 const amountA = ref<number>(0)
 
-const hasAmountB = computed(() => selectedAction.value === 1)
+// Amount B
+const hasAmountB = computed(
+  () => selectedAction.value === XykActions.CREATE_POOL
+)
+const amountBLabel = computed(() =>
+  selectedAction.value === XykActions.SELL
+    ? 'Amout you want to sell'
+    : 'Amount of asset B'
+)
 const amountB = ref<number>(0)
 
+// Limit
 const hasLimit = computed(
-  () => selectedAction.value && selectedAction.value !== 1
+  () =>
+    selectedAction.value !== null &&
+    selectedAction.value !== XykActions.CREATE_POOL
 )
 const limitLabel = computed<string>(() =>
   selectedAction.value === 2
@@ -156,7 +195,9 @@ const limitLabel = computed<string>(() =>
 const limit = ref<number>(0)
 
 const hasDiscount = computed(
-  () => selectedAction.value === 4 || selectedAction.value === 5
+  () =>
+    selectedAction.value === XykActions.BUY ||
+    selectedAction.value === XykActions.SELL
 )
 const discount = ref<boolean>(false)
 
@@ -169,76 +210,94 @@ const clear = () => {
   discount.value = false
 }
 
+const xykStore = useXykStore()
+const transactionRunning = computed(() => xykStore.running)
+
 const canSend = computed<boolean>(() => {
+  if (transactionRunning.value || !hasAccount.value) {
+    return false
+  }
   switch (selectedAction.value) {
-    case 1:
-      return (
-        !!assetA.value && !!amountA.value && !!assetB.value && !!amountB.value
-      )
-    case 2:
-      return (
-        !!assetA.value && !!amountA.value && !!assetB.value && !!limit.value
-      )
-    case 3:
-      return !!assetA.value && !!assetB.value && !!limit.value
-    case 4:
+    case XykActions.CREATE_POOL:
       return (
         !!assetA.value &&
-        !!amountA.value &&
+        amountA.value >= 0 &&
         !!assetB.value &&
-        !!limit.value &&
-        !!discount.value
+        amountB.value >= 0
       )
-    case 5:
+    case XykActions.ADD_LIQUIDITY:
       return (
         !!assetA.value &&
-        !!amountA.value &&
+        amountA.value >= 0 &&
         !!assetB.value &&
-        !!limit.value &&
-        !!discount.value
+        limit.value >= 0
+      )
+    case XykActions.REMOVE_LIQUIDITY:
+      return !!assetA.value && !!assetB.value && limit.value >= 0
+    case XykActions.BUY:
+      return (
+        !!assetA.value &&
+        amountA.value >= 0 &&
+        !!assetB.value &&
+        limit.value >= 0
+      )
+    case XykActions.SELL:
+      return (
+        !!assetA.value &&
+        amountA.value >= 0 &&
+        !!assetB.value &&
+        limit.value >= 0
       )
   }
   return false
 })
 
-const xykStore = useXykStore()
 const send = () => {
   switch (selectedAction.value) {
-    case 1:
+    case XykActions.CREATE_POOL:
       xykStore.createPool(
-        assetA.value,
+        Number(assetA.value),
         amountA.value,
-        assetB.value,
-        amountB.value
+        Number(assetB.value),
+        amountB.value,
+        account.value!
       )
       break
-    case 2:
+    case XykActions.ADD_LIQUIDITY:
       xykStore.addLiquidity(
-        assetA.value,
+        Number(assetA.value),
         amountA.value,
-        assetB.value,
-        limit.value
+        Number(assetB.value),
+        limit.value,
+        account.value!
       )
       break
-    case 3:
-      xykStore.removeLiquidity(assetA.value, assetB.value, limit.value)
+    case XykActions.REMOVE_LIQUIDITY:
+      xykStore.removeLiquidity(
+        Number(assetA.value),
+        Number(assetB.value),
+        limit.value,
+        account.value!
+      )
       break
-    case 4:
+    case XykActions.BUY:
       xykStore.buy(
-        assetA.value,
+        Number(assetA.value),
         amountA.value,
-        assetB.value,
+        Number(assetB.value),
         limit.value,
-        discount.value
+        discount.value,
+        account.value!
       )
       break
-    case 5:
+    case XykActions.SELL:
       xykStore.sell(
-        assetA.value,
+        Number(assetA.value),
         amountA.value,
-        assetB.value,
+        Number(assetB.value),
         limit.value,
-        discount.value
+        discount.value,
+        account.value!
       )
       break
   }

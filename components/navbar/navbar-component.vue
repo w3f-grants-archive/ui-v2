@@ -1,7 +1,7 @@
 <template>
   <n-space justify="space-between">
     <n-space>
-      <img src="images/paraspellLogo.png" alt="paraspell" width="150" />
+      <img src="/images/paraspellLogo.png" alt="paraspell" width="150" />
       <n-menu
         v-model:value="activeKey"
         mode="horizontal"
@@ -107,8 +107,8 @@ const menuOptions: MenuOption[] = [
         },
         h('img', {
           src: darkTheme.value
-            ? 'images/bsx-ico.svg'
-            : 'images/bsx-ico-dark.svg',
+            ? '/images/bsx-ico.svg'
+            : '/images/bsx-ico-dark.svg',
           alt: 'bsx-icon',
           class: 'bsx-icon',
         })

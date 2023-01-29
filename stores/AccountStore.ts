@@ -14,7 +14,7 @@ export const DEVELOPMENT_ACCOUNTS = [
   'Eve',
   'Ferdie',
 ] as const
-interface Account extends InjectedAccountWithMeta {
+export interface Account extends InjectedAccountWithMeta {
   id: number
   dev?: boolean
 }

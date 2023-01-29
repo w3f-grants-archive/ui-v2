@@ -5,7 +5,7 @@
         <template #header>
           <span id="heading-wrapper">
             <h1 id="heading">XYK by</h1>
-            <img src="images/bsx.svg" alt="bsx" />
+            <img src="/images/bsx.svg" alt="bsx" />
           </span>
           <n-divider />
         </template>

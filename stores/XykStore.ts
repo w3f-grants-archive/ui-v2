@@ -1,52 +1,214 @@
+import { Builder } from '@paraspell/sdk'
+import {
+  ApiPromise,
+  Keyring,
+  SubmittableResult,
+  WsProvider,
+} from '@polkadot/api'
+import { web3FromAddress } from '@polkadot/extension-dapp'
 import consola from 'consola'
+import { Account } from './AccountStore'
 
 const logger = consola.create({
   defaults: {
     tag: 'store::xyk:',
   },
 })
-type State = {}
+type State = {
+  running: boolean
+}
 
 export const useXykStore = defineStore({
   id: 'xyk',
-  state: (): State => ({}),
+  state: (): State => ({
+    running: false,
+  }),
   actions: {
-    createPool(
-      assetA: string,
-      amountA: number,
-      assetB: string,
-      amountB: number
-    ) {
-      logger.success('Create pool', assetA, amountA, assetB, amountB)
+    updateHandler({ status }: SubmittableResult, type: string) {
+      const notificationStore = useNotificationStore()
+      if (status.isInBlock) {
+        this.running = false
+        notificationStore.create(
+          'Success',
+          `${type} with hash ${status.asInBlock}`,
+          NotificationType.Success
+        )
+        logger.success(`Successful ${type} with hash ${status.asInBlock}`)
+      } else {
+        notificationStore.create(
+          'Update',
+          `${type} update: ${status.type}`,
+          NotificationType.Info
+        )
+        logger.success(`${type} update: ${status.type}`)
+      }
     },
-    addLiquidity(
-      assetA: string,
+    async createPool(
+      assetA: number,
       amountA: number,
-      assetB: string,
-      limit: number
-    ) {
-      logger.success('Add liquidity', assetA, amountA, assetB, limit)
+      assetB: number,
+      amountB: number,
+      account: Account
+    ): Promise<void> {
+      this.running = true
+
+      const wsProvider = new WsProvider('ws://127.0.0.1:9988')
+      const api = await ApiPromise.create({ provider: wsProvider })
+      const extrinsic = Builder(api)
+        .createPool()
+        .assetA(assetA)
+        .amountA(amountA)
+        .assetB(assetB)
+        .amountB(amountB)
+        .build()
+
+      if (account.dev) {
+        const keyring = new Keyring({ type: 'sr25519' })
+        extrinsic.signAndSend(keyring.createFromUri(account.address), (res) =>
+          this.updateHandler(res, 'create pool')
+        )
+        return
+      }
+      const injector = await web3FromAddress(account.address)
+      extrinsic.signAndSend(
+        account.address,
+        { signer: injector.signer },
+        (res) => this.updateHandler(res, 'create pool')
+      )
     },
-    removeLiquidity(assetA: string, assetB: string, limit: number) {
-      logger.success('Remove liquidity', assetA, assetB, limit)
-    },
-    buy(
-      assetA: string,
+    async addLiquidity(
+      assetA: number,
       amountA: number,
-      assetB: string,
+      assetB: number,
       limit: number,
-      discount: boolean
+      account: Account
     ) {
-      logger.success('Buy', assetA, amountA, assetB, limit, discount)
+      this.running = true
+
+      const wsProvider = new WsProvider('ws://127.0.0.1:9988')
+      const api = await ApiPromise.create({ provider: wsProvider })
+      const extrinsic = Builder(api)
+        .addLiquidity()
+        .assetA(assetA)
+        .assetB(assetB)
+        .amountA(amountA)
+        .amountBMaxLimit(limit)
+        .build()
+
+      if (account.dev) {
+        const keyring = new Keyring({ type: 'sr25519' })
+        extrinsic.signAndSend(keyring.createFromUri(account.address), (res) =>
+          this.updateHandler(res, 'add liquidity')
+        )
+        return
+      }
+      const injector = await web3FromAddress(account.address)
+      extrinsic.signAndSend(
+        account.address,
+        { signer: injector.signer },
+        (res) => this.updateHandler(res, 'create pool')
+      )
     },
-    sell(
-      assetA: string,
-      amountA: number,
-      assetB: string,
+    async removeLiquidity(
+      assetA: number,
+      assetB: number,
       limit: number,
-      discount: boolean
+      account: Account
     ) {
-      logger.success('Sell', assetA, amountA, assetB, limit, discount)
+      this.running = true
+
+      const wsProvider = new WsProvider('ws://127.0.0.1:9988')
+      const api = await ApiPromise.create({ provider: wsProvider })
+      const extrinsic = Builder(api)
+        .removeLiquidity()
+        .assetA(assetA)
+        .assetB(assetB)
+        .liquidityAmount(limit)
+        .build()
+
+      if (account.dev) {
+        const keyring = new Keyring({ type: 'sr25519' })
+        extrinsic.signAndSend(keyring.createFromUri(account.address), (res) =>
+          this.updateHandler(res, 'remove liquidity')
+        )
+        return
+      }
+      const injector = await web3FromAddress(account.address)
+      extrinsic.signAndSend(
+        account.address,
+        { signer: injector.signer },
+        (res) => this.updateHandler(res, 'remove liquidity')
+      )
+    },
+    async buy(
+      assetA: number,
+      amountA: number,
+      assetB: number,
+      limit: number,
+      discount: boolean,
+      account: Account
+    ) {
+      this.running = true
+
+      const wsProvider = new WsProvider('ws://127.0.0.1:9988')
+      const api = await ApiPromise.create({ provider: wsProvider })
+      const extrinsic = Builder(api)
+        .buy()
+        .assetOut(assetA)
+        .assetIn(assetB)
+        .amount(amountA)
+        .maxLimit(limit)
+        .discount(discount ? 'Yes' : 'No')
+        .build()
+
+      if (account.dev) {
+        const keyring = new Keyring({ type: 'sr25519' })
+        extrinsic.signAndSend(keyring.createFromUri(account.address), (res) =>
+          this.updateHandler(res, 'buy')
+        )
+        return
+      }
+      const injector = await web3FromAddress(account.address)
+      extrinsic.signAndSend(
+        account.address,
+        { signer: injector.signer },
+        (res) => this.updateHandler(res, 'buy')
+      )
+    },
+    async sell(
+      assetA: number,
+      amountA: number,
+      assetB: number,
+      limit: number,
+      discount: boolean,
+      account: Account
+    ) {
+      this.running = true
+
+      const wsProvider = new WsProvider('ws://127.0.0.1:9988')
+      const api = await ApiPromise.create({ provider: wsProvider })
+      const extrinsic = Builder(api)
+        .sell()
+        .assetIn(assetB)
+        .assetOut(assetA)
+        .amount(amountA)
+        .maxLimit(limit)
+        .discount(discount ? 'Yes' : 'No')
+        .build()
+
+      if (account.dev) {
+        const keyring = new Keyring({ type: 'sr25519' })
+        extrinsic.signAndSend(keyring.createFromUri(account.address), (res) =>
+          this.updateHandler(res, 'sell')
+        )
+        return
+      }
+      const injector = await web3FromAddress(account.address)
+      extrinsic.signAndSend(
+        account.address,
+        { signer: injector.signer },
+        (res) => this.updateHandler(res, 'sell')
+      )
     },
   },
 })
