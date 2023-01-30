@@ -61,6 +61,12 @@ export const useAssetsStore = defineStore({
         return
       }
       this.assets = $paraspell.assets.getAssetsObject(node)
+      if (node === 'Pichiu') {
+        this.assets.nativeAssets.push({
+          symbol: 'KSM',
+          decimals: 12,
+        })
+      }
     },
     /**
      * Send a transaction
