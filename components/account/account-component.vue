@@ -1,6 +1,7 @@
 <template>
-  <n-button style="margin: 10px" @click="showModal">
-    {{ accountStore.selected ? selected : 'Select your account' }}
+  <n-button @click="showModal">
+    <span v-if="accountStore.selected">{{ selected }}</span>
+    <slot v-else>Select your account</slot>
   </n-button>
   <n-modal v-model:show="modalState">
     <n-card
