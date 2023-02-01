@@ -1,33 +1,63 @@
 <template>
-  <n-space justify="space-between">
-    <n-space>
-      <img src="/images/paraspellLogo.png" alt="paraspell" width="150" />
-      <n-menu
-        v-model:value="activeKey"
-        mode="horizontal"
-        :options="menuOptions"
-        colapsed
-      />
-    </n-space>
-    <n-space justify="end" align="center">
-      <client-only>
-        <account-component />
-        <template #fallback>
-          <n-button style="margin: 10px" disabled>
-            Loading accounts...
-          </n-button>
-        </template>
-      </client-only>
-      <client-only>
-        <dark-mode
-          v-if="darkTheme"
-          class="themeIcon"
-          @click="mainStore.changeTheme()"
-        />
-        <light-mode v-else class="themeIcon" @click="mainStore.changeTheme()" />
-      </client-only>
-    </n-space>
-  </n-space>
+  <n-grid cols="1 m:1" responsive="screen" class="wrapper">
+    <n-gi span="0 m:1">
+      <n-space justify="space-between" style="width: 98%" :wrap-item="false">
+        <n-space justify="start" align="center" :wrap-item="false">
+          <img
+            src="/images/paraspellLogo.png"
+            alt="paraspell"
+            class="paraspell"
+          />
+          <n-menu
+            v-model:value="activeKey"
+            mode="horizontal"
+            :options="menuOptions"
+            colapsed
+          />
+        </n-space>
+        <n-space align="center" :wrap-item="false">
+          <account-component />
+          <dark-mode
+            v-if="darkTheme"
+            class="themeIcon"
+            @click="mainStore.changeTheme()"
+          />
+          <light-mode
+            v-else
+            class="themeIcon"
+            @click="mainStore.changeTheme()"
+          />
+        </n-space>
+      </n-space>
+    </n-gi>
+    <n-gi span="1 m:0">
+      <n-space justify="start" vertical>
+        <n-space justify="space-between" align="center" :wrap-item="false">
+          <img
+            class="paraspell"
+            src="/images/paraspellLogo.png"
+            alt="paraspell"
+          />
+          <n-space
+            class="mobile-menu"
+            justify="end"
+            align="center"
+            :wrap-item="false"
+          >
+            <account-component>Select account</account-component>
+            <n-menu
+              v-model:value="activeKey"
+              :options="mobileMenuOptions"
+              :default-expanded-keys="['menu']"
+              dropdown-placement="top-start"
+              mode="horizontal"
+              colapsed
+            />
+          </n-space>
+        </n-space>
+      </n-space>
+    </n-gi>
+  </n-grid>
 </template>
 
 <script lang="ts" setup>
@@ -36,10 +66,11 @@ import {
   CycloneFilled as CycloneIcon,
   DarkModeFilled as DarkMode,
   DarkModeTwotone as LightMode,
+  MenuFilled as MenuIcon,
   HomeFilled as HomeIcon,
 } from '@vicons/material'
 import type { MenuOption } from 'naive-ui'
-import { NButton, NIcon, NMenu, NSpace } from 'naive-ui'
+import { NIcon, NMenu, NSpace, NGrid, NGi } from 'naive-ui'
 import { Component, h, ref } from 'vue'
 import AccountComponent from '@/components/account/account-component.vue'
 
@@ -116,17 +147,32 @@ const menuOptions: MenuOption[] = [
       ),
   },
 ]
-// onMounted(() => {
-//   window.addEventListener('resize', this.myEventHandler)
-// })
+
+const mobileMenuOptions: MenuOption[] = [
+  {
+    key: 'menu',
+    icon: renderIcon(MenuIcon),
+    children: menuOptions,
+  },
+]
 const activeKey = ref<string | null>(null)
 </script>
 
 <style lang="scss">
+.wrapper {
+  width: 100%;
+  padding: 20px;
+}
+.mobile-menu {
+  margin-right: 10px;
+}
+.paraspell {
+  width: 120px;
+  margin-left: 20px;
+}
 .themeIcon {
   width: 30px;
   cursor: pointer;
-  margin-right: 5px;
 }
 
 .bsx-icon {
