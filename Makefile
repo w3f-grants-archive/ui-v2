@@ -38,4 +38,4 @@ launch:
 
 .Phone: dockerLaunch
 dockerLaunch:
-	docker build -t paraspell . && docker run -it -p 8080:8080 --rm --name paraspell1 paraspell
+	docker build -t paraspell . && docker run -it -p 3000:3000 --rm --name paraspell1 paraspell

@@ -1,7 +1,8 @@
 FROM node:lts-alpine
 
-# install simple http server for serving static content
-RUN npm install -g http-server
+ENV HOST='0.0.0.0'
+ENV PORT='3000'
+
 RUN npm install -g pnpm
 
 # make the 'app' folder the current working directory
@@ -20,5 +21,5 @@ COPY . .
 # build app for production with minification
 RUN pnpm run build
 
-EXPOSE 8080
-CMD [ "http-server", "dist" ]
+EXPOSE 3000
+CMD ["node", "/app/.output/server/index.mjs"]
