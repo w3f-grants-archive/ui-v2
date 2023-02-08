@@ -103,6 +103,10 @@ import {
 } from 'naive-ui'
 
 import { SendFilled as SendIcon } from '@vicons/material'
+// Xyk
+const xykStore = useXykStore()
+const transactionRunning = computed(() => xykStore.running)
+
 /// Account logic
 const accountStore = useAccountStore()
 const account = computed(() => accountStore.selected)
@@ -194,6 +198,7 @@ const limitLabel = computed<string>(() =>
 )
 const limit = ref<number>(0)
 
+// Discount
 const hasDiscount = computed(
   () =>
     selectedAction.value === XykActions.BUY ||
@@ -201,6 +206,7 @@ const hasDiscount = computed(
 )
 const discount = ref<boolean>(false)
 
+// Clearing of inputs
 const clear = () => {
   assetA.value = ''
   assetB.value = ''
@@ -210,9 +216,7 @@ const clear = () => {
   discount.value = false
 }
 
-const xykStore = useXykStore()
-const transactionRunning = computed(() => xykStore.running)
-
+// Sending
 const canSend = computed<boolean>(() => {
   if (transactionRunning.value || !hasAccount.value) {
     return false
@@ -253,6 +257,7 @@ const canSend = computed<boolean>(() => {
 })
 
 const send = () => {
+  // Calling store logic by selected operation
   switch (selectedAction.value) {
     case XykActions.CREATE_POOL:
       xykStore.createPool(
