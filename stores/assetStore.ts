@@ -164,9 +164,18 @@ export const useAssetsStore = defineStore({
     },
   },
   getters: {
+    /**
+     * Getter for all availible nodes
+     * @returns Array of nodes
+     */
     nodeOptions: (): DestinationOption[] => {
       return NODE_NAMES.map((name) => ({ value: name, label: name }))
     },
+    /**
+     * Getter for availible assets based on selected node
+     * @param state - store state
+     * @returns Array of assets
+     */
     assetOptions: (state): TAssetDetails[] => {
       // check if assets are loaded
       if (!state.assets) return []
@@ -178,6 +187,10 @@ export const useAssetsStore = defineStore({
         ...state.assets.otherAssets,
       ]
     },
+    /**
+     * Getter for availible destination nodes based on source and asset
+     * @returns Updated function
+     */
     destinationOptions:
       (): Function =>
       (

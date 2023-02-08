@@ -14,6 +14,9 @@ export const useMainStore = defineStore({
     darkTheme: false,
   }),
   actions: {
+    /**
+     * Change theme of app
+     */
     changeTheme(): void {
       this.darkTheme = !this.darkTheme
     },

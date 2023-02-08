@@ -35,6 +35,13 @@ export const useNotificationStore = defineStore({
     idCounter: 0,
   }),
   actions: {
+    /**
+     * Create notification in app
+     * @param title - Title of notification
+     * @param message - Message inside notification
+     * @param type - Type of notitifcation based on `NotificationType` enum
+     * @param duration - How long should this notification last in ms
+     */
     create(
       title: string,
       message = '',
@@ -52,21 +59,11 @@ export const useNotificationStore = defineStore({
           duration,
         },
       ]
-      // switch (type) {
-      //   case NotificationType.Info:
-      //     logger.info(`creating info notification with ID: ${id}`)
-      //     break
-      //   case NotificationType.Warning:
-      //     logger.warn(`creating warning notification with ID: ${id}`)
-      //     break
-      //   case NotificationType.Success:
-      //     logger.success(`creating success notification with ID: ${id}`)
-      //     break
-      //   case NotificationType.Error:
-      //     logger.error(`creating error notification with ID: ${id}`)
-      //     break
-      // }
     },
+    /**
+     * Remove notification based on ID
+     * @param id - ID of notification
+     */
     remove(id: number) {
       this.notifications = this.notifications.filter((n) => n.id === id)
     },

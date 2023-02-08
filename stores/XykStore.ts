@@ -24,6 +24,11 @@ export const useXykStore = defineStore({
     running: false,
   }),
   actions: {
+    /**
+     * Handler for transaction update
+     * @param param0 - Transaction state object
+     * @param type - Type of transaction
+     */
     updateHandler({ status }: SubmittableResult, type: string) {
       const notificationStore = useNotificationStore()
       if (status.isInBlock) {
@@ -43,6 +48,15 @@ export const useXykStore = defineStore({
         logger.success(`${type} update: ${status.type}`)
       }
     },
+
+    /**
+     * Method to create new XYK pool
+     * @param assetA - ID of asset A
+     * @param amountA - Amount of asset A
+     * @param assetB  - ID of asset B
+     * @param amountB - Amount of asset B
+     * @param account - Account address
+     */
     async createPool(
       assetA: number,
       amountA: number,
@@ -76,6 +90,15 @@ export const useXykStore = defineStore({
         (res) => this.updateHandler(res, 'create pool')
       )
     },
+
+    /**
+     * Method to add liquidity to the pool
+     * @param assetA - ID of asset A
+     * @param amountA - Amount of asset A
+     * @param assetB  - ID of asset B
+     * @param limit - Max ammount you want to provide
+     * @param account - Account address
+     */
     async addLiquidity(
       assetA: number,
       amountA: number,
@@ -109,6 +132,14 @@ export const useXykStore = defineStore({
         (res) => this.updateHandler(res, 'create pool')
       )
     },
+
+    /**
+     * Method to remove liquidity from the pool
+     * @param assetA - ID of asset A
+     * @param assetB  - ID of asset B
+     * @param limit - Max limit of asset B
+     * @param account - Account address
+     */
     async removeLiquidity(
       assetA: number,
       assetB: number,
@@ -140,6 +171,16 @@ export const useXykStore = defineStore({
         (res) => this.updateHandler(res, 'remove liquidity')
       )
     },
+
+    /**
+     * Method to buy assets from the pool
+     * @param assetA - ID of asset you buy
+     * @param amountA - Amount of asset you buy
+     * @param assetB  - ID of asset you sell
+     * @param limit - Max ammount you wish to remove
+     * @param discount - True if you wish to apply discount
+     * @param account - Account address
+     */
     async buy(
       assetA: number,
       amountA: number,
@@ -175,6 +216,16 @@ export const useXykStore = defineStore({
         (res) => this.updateHandler(res, 'buy')
       )
     },
+
+    /**
+     * Method to sell assets from the pool
+     * @param assetA - ID of asset you buy
+     * @param amountA - Amount of asset you buy
+     * @param assetB  - ID of asset you sell
+     * @param limit - Max ammount you want to give
+     * @param discount - True if you wish to apply discount
+     * @param account - Account address
+     */
     async sell(
       assetA: number,
       amountA: number,
