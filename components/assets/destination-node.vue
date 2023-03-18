@@ -28,7 +28,7 @@ const $emit = defineEmits(['clear', 'change'])
 const assetsStore = useAssetsStore()
 
 // Asset logic
-const availibleAssets = computed(() =>
+const availableAssets = computed(() =>
   assetsStore.assetOptions.map((asset, id) => ({ id, ...asset }))
 )
 
@@ -37,7 +37,7 @@ const destinationOptions = computed(() => {
   if (props.selectedAsset === null) {
     return []
   }
-  const asset = availibleAssets.value.find(
+  const asset = availableAssets.value.find(
     (asset) => asset.id === props.selectedAsset
   )
   if (!asset) return []
@@ -46,22 +46,22 @@ const destinationOptions = computed(() => {
     props.selectedNode
   )
 
-  const [availible, unavailible] = splitNodesByAvailibility(
+  const [available, unavailable] = splitNodesByAvailability(
     nodeOptions,
     SUPPORTED_NODES.filter((node) => node !== props.selectedNode)
   )
   return [
     {
       type: 'group',
-      label: 'Availible nodes',
-      key: 'availible',
-      children: availible,
+      label: 'Available nodes',
+      key: 'available',
+      children: available,
     },
     {
       type: 'group',
       label: 'Unavailable nodes',
       key: 'unavailable',
-      children: unavailible,
+      children: unavailable,
     },
   ]
 })

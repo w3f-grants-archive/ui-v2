@@ -185,15 +185,3 @@ const onSend = () => {
   )
 }
 </script>
-<style lang="scss">
-.address-wrapper {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-}
-.ammount-wrapper {
-  width: 100%;
-  display: flex;
-  gap: 12px;
-}
-</style>

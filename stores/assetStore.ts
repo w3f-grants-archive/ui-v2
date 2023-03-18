@@ -30,7 +30,7 @@ const NODES_MAP: Nodes = {
 /**
  * Shortcuts are standing for:
  * PtP -> Para to Para
- * RtP -> Relat to Para
+ * RtP -> Relay to Para
  * PtR -> Para to Relay
  */
 export type TransferType = 'PtP' | 'RtP' | 'PtR'
@@ -108,20 +108,35 @@ export const useAssetsStore = defineStore({
       const accountStore = useAccountStore()
       const wsProvider = new WsProvider(NODES_MAP[source])
       const api = await ApiPromise.create({ provider: wsProvider })
-      let builder = $paraspell.Builder(api) as any
-      if (type === 'PtR' || type === 'PtP') {
-        builder = builder.from(source)
+      const builder = $paraspell.Builder(api)
+      let extrinsic: Extrinsic | null = null
+      switch (type) {
+        case 'PtP':
+          extrinsic = builder
+            .from(source)
+            .to(destination)
+            .currency(selectedAsset.symbol)
+            .amount(balance * 10 ** selectedAsset.decimals)
+            .address(address ?? accountStore.selected!.address)
+            .build()
+          break
+        case 'RtP':
+          extrinsic = builder
+            .to(destination)
+            .amount(balance * 10 ** selectedAsset.decimals)
+            .address(address ?? accountStore.selected!.address)
+            .build()
+          break
+        case 'PtR':
+          extrinsic = builder
+            .from(source)
+            .currency(selectedAsset.symbol)
+            .amount(balance * 10 ** selectedAsset.decimals)
+            .address(address ?? accountStore.selected!.address)
+            .build()
+          break
       }
-      if (type === 'RtP' || type === 'PtP') {
-        builder = builder.to(destination)
-      }
-      if (type !== 'RtP') {
-        builder = builder.currency(selectedAsset.symbol).currencyId(0)
-      }
-      const extrinsic = builder
-        .amount(balance * 10 ** selectedAsset.decimals)
-        .address(address ?? accountStore.selected!.address)
-        .build() as Extrinsic
+
       if (!accountStore.selected) {
         return
       }
@@ -167,14 +182,14 @@ export const useAssetsStore = defineStore({
   },
   getters: {
     /**
-     * Getter for all availible nodes
+     * Getter for all available nodes
      * @returns Array of nodes
      */
     nodeOptions: (): DestinationOption[] => {
       return NODE_NAMES.map((name) => ({ value: name, label: name }))
     },
     /**
-     * Getter for availible assets based on selected node
+     * Getter for available assets based on selected node
      * @param state - store state
      * @returns Array of assets
      */
@@ -190,7 +205,7 @@ export const useAssetsStore = defineStore({
       ]
     },
     /**
-     * Getter for availible destination nodes based on source and asset
+     * Getter for available destination nodes based on source and asset
      * @returns Updated function
      */
     destinationOptions:
