@@ -161,10 +161,10 @@ const clearDestination = () => {
 const canSend = computed(
   () =>
     hasAccount.value &&
-    selectedType.value &&
-    (selectedNode.value || selectedType.value !== 'PtP') &&
-    (selectedDestination || selectedType.value !== 'PtR') &&
-    selectedAsset.value &&
+    selectedType.value !== null &&
+    (selectedNode.value !== null || selectedType.value === 'RtP') &&
+    (selectedDestination.value !== null || selectedType.value === 'PtR') &&
+    selectedAsset.value !== null &&
     balance.value >= 0.1
 )
 const onSend = () => {
