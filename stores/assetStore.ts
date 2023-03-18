@@ -51,13 +51,15 @@ export const useAssetsStore = defineStore({
      * Select node to show assets
      * @param node
      */
-    selectNode(node: TNode | null, relay = false): void {
+    selectNode(node: TNode | null): void {
       const { $paraspell } = useNuxtApp()
-      // TODO: Do we want BifrostKusama as Relay chain?
-      if (relay) {
-        node = 'BifrostKusama'
-      }
       if (!node) {
+        this.assets = {
+          paraId: 1,
+          relayChainAssetSymbol: 'KSM',
+          nativeAssets: [{ symbol: 'KSM', decimals: 12 }],
+          otherAssets: [],
+        }
         return
       }
       this.assets = $paraspell.assets.getAssetsObject(node)
@@ -193,10 +195,7 @@ export const useAssetsStore = defineStore({
      */
     destinationOptions:
       (): Function =>
-      (
-        symbol: string,
-        currentNode: TNode = 'BifrostKusama'
-      ): DestinationOption[] => {
+      (symbol: string, currentNode: TNode | null): DestinationOption[] => {
         const { $paraspell } = useNuxtApp()
         return NODE_NAMES.filter(
           (node) =>

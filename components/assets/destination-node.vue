@@ -5,7 +5,7 @@
       class="destination-select"
       placeholder="Select destination"
       :options="destinationOptions"
-      :disabled="!selectedAsset"
+      :disabled="selectedAsset === null"
       filterable
       clearable
       @clear="$emit('clear')"
@@ -34,7 +34,7 @@ const availibleAssets = computed(() =>
 
 // Destination logic
 const destinationOptions = computed(() => {
-  if (!props.selectedAsset) {
+  if (props.selectedAsset === null) {
     return []
   }
   const asset = availibleAssets.value.find(
@@ -48,9 +48,7 @@ const destinationOptions = computed(() => {
 
   const [availible, unavailible] = splitNodesByAvailibility(
     nodeOptions,
-    SUPPORTED_NODES.filter(
-      (node) => node !== (props.selectedNode ?? 'BifrostKusama')
-    )
+    SUPPORTED_NODES.filter((node) => node !== props.selectedNode)
   )
   return [
     {

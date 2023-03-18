@@ -133,9 +133,9 @@ const isBalanceDisabled = computed(() => {
 
 watch(
   () => selectedType.value,
-  (val) => {
+  () => {
     selectedNode.value = null
-    assetsStore.selectNode(null, val === 'RtP')
+    assetsStore.selectNode(null)
   }
 )
 
@@ -145,7 +145,7 @@ const clearType = () => {
   clearNode()
 }
 const clearNode = () => {
-  assetsStore.selectNode(null, selectedType.value === 'RtP')
+  assetsStore.selectNode(null)
   selectedAsset.value = null
   clearAsset()
 }
