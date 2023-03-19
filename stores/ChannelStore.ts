@@ -39,7 +39,7 @@ export const useChannelStore = defineStore({
   }),
   actions: {
     /**
-     * Method to load availible parachains into the state
+     * Method to load available parachains into the state
      */
     async loadParachains(): Promise<void> {
       const wsProvider = new WsProvider('ws://127.0.0.1:9944')
@@ -115,7 +115,7 @@ export const useChannelStore = defineStore({
     /**
      * Method to handle chain responses when opening channel
      * @param result Result from chain
-     * @param isSource Boolean to dermine what side of handler is this
+     * @param isSource Boolean to determine what side of handler is this
      * @param source Source chain ID
      * @param destination Destination chain ID
      */
@@ -129,14 +129,14 @@ export const useChannelStore = defineStore({
       if (!this.sourceInformed && isSource) {
         this.sourceInformed = true
         notificationStore.create(
-          `Openning source channel`,
+          `Opening source channel`,
           `You will get notified about channel status soon. Transaction hash is ${txHash.toHex()}`
         )
       }
       if (!this.destinationInformed && !isSource) {
         this.destinationInformed = true
         notificationStore.create(
-          `Openning destination channel`,
+          `Opening destination channel`,
           `You will get notified about channel status soon. Transaction hash is ${txHash.toHex()}`
         )
       }
@@ -189,7 +189,7 @@ export const useChannelStore = defineStore({
       this.apiConnected = true
       const channels = await api.query.hrmp.hrmpChannels.entries()
       for (const channel in channels) {
-        // Codec type is missing correct types so we need to provide them manualy
+        // Codec type is missing correct types so we need to provide them manually
         const era = channels[channel][0].args[0] as unknown as {
           sender: { words: [number] }
           recipient: { words: [number] }
