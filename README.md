@@ -93,13 +93,36 @@ make rustup
 ```
 
 ## 3.3 Network install, compilation & start 
+
+### You have 2 tracks to choose from depending on which startup configurator you wish to use
+
+#### Parachain-launch (Fast install, reliable)
 ```
-make install
+make install-parachain-launch
 ```
 
 #### Relaunch network after it was put down.
 ```
-make launch
+make launch-parachain-launch
+```
+
+#### Zombienet Linux
+```
+make install-zombienet-linux
+```
+
+#### Zombienet Mac
+```
+make install-zombienet-mac
+```
+
+#### Relaunch network after it was put down - Linux.
+```
+make launch-zombienet-linux
+```
+#### Relaunch network after it was put down - MacOS.
+```
+make launch-zombienet-mac
 ```
 
 ## 3.4 Application install & launch
