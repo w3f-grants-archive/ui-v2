@@ -4,7 +4,7 @@ bootnode = false
 
 [relaychain]
 chain = "rococo-local"
-default_image = "parity/polkadot:v0.9.31"
+default_image = "docker.io/parity/polkadot:v0.9.31"
 default_args = [ "--wasm-execution=compiled", "--execution=wasm" ]
 
 
@@ -38,7 +38,7 @@ chain = "karura-local"
 
   [[parachains.collators]]
   name = "karura-alice"
-  image = "acala/karura-node:2.11.0"
+  image = "docker.io/acala/karura-node:2.11.0"
   command = "acala"
   args = [ "--wasm-execution=compiled", "--execution=wasm", "--force-authoring", "--", "--wasm-execution=compiled"]
   ws_port = 9999
@@ -48,7 +48,7 @@ chain = "karura-local"
 
   [[parachains.collators]]
   name = "karura-bob"
-  image = "acala/karura-node:2.11.0"
+  image = "docker.io/acala/karura-node:2.11.0"
   command = "acala"
   args = [ "--wasm-execution=compiled", "--execution=wasm", "--force-authoring", "--", "--wasm-execution=compiled" ]
   ws_port = 9998
@@ -58,7 +58,7 @@ chain = "karura-local"
 
   [[parachains.collators]]
   name = "karura-charlie"
-  image = "acala/karura-node:2.11.0"
+  image = "docker.io/acala/karura-node:2.11.0"
   command = "acala"
   args = [ "--wasm-execution=compiled", "--execution=wasm", "--force-authoring", "--", "--wasm-execution=compiled" ]
   ws_port = 9997
@@ -74,7 +74,7 @@ chain = "bifrost-local"
 
   [[parachains.collators]]
   name = "bifrost-bob"
-  image = "bifrostnetwork/bifrost:bifrost-v0.9.70"
+  image = "docker.io/bifrostnetwork/bifrost:bifrost-v0.9.70"
   command = "bifrost"
   args = [ "--wasm-execution=compiled", "--execution=wasm", "--force-authoring", "--", "--wasm-execution=compiled" ]
   ws_port = 9995
@@ -89,7 +89,7 @@ chain = "pichiu-local"
 
   [[parachains.collators]]
   name = "kylin-alice"
-  image = "kylinnetworks/kylin-collator:ro-v0.9.30"
+  image = "docker.io/kylinnetworks/kylin-collator:ro-v0.9.30"
   command = "kylin-collator"
   args = [ "--wasm-execution=compiled", "--execution=wasm", "--force-authoring", "--", "--wasm-execution=compiled" ]
   ws_port = 9991
