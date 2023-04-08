@@ -96,34 +96,26 @@ make rustup
 
 ### You have 2 tracks to choose from depending on which startup configurator you wish to use
 
-#### Parachain-launch (Fast install, reliable)
+#### Parachain-launch - Linux+MacOS
 ```
 make install-parachain-launch
 ```
 
-#### Relaunch network after it was put down.
+#### Relaunch network after it was put down - Linux+MacOS
 ```
 make launch-parachain-launch
 ```
 
-#### Zombienet Linux
+#### Zombienet - Linux 
 ```
 make install-zombienet-linux
-```
-
-#### Zombienet Mac
-```
-make install-zombienet-mac
 ```
 
 #### Relaunch network after it was put down - Linux.
 ```
 make launch-zombienet-linux
 ```
-#### Relaunch network after it was put down - MacOS.
-```
-make launch-zombienet-mac
-```
+
 
 ## 3.4 Application install & launch
 ### Start application in docker container

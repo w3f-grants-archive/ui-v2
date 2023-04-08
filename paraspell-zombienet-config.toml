@@ -15,6 +15,7 @@ default_args = [ "--wasm-execution=compiled", "--execution=wasm" ]
 
   [[relaychain.nodes]]
   name = "alice"
+  ws_port = 9944
   [[relaychain.nodes.env]]
   name = "RUST_LOG"
   value = "parachain::candidate-backing=trace,parachain::candidate-selection=trace,parachain::pvf=trace,parachain::collator-protocol=trace,parachain::provisioner=trace"
