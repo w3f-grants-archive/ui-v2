@@ -1,0 +1,138 @@
+[settings]
+timeout = 1000
+bootnode = false
+
+[relaychain]
+chain = "rococo-local"
+default_image = "docker.io/parity/polkadot:v0.9.31"
+default_args = [ "--wasm-execution=compiled", "--execution=wasm" ]
+
+
+
+  [relaychain.genesis.runtime.runtime_genesis_config.configuration.config]
+  validation_upgrade_cooldown = 10
+  validation_upgrade_delay = 10
+
+  [[relaychain.nodes]]
+  name = "alice"
+  ws_port = 9944
+  [[relaychain.nodes.env]]
+  name = "RUST_LOG"
+  value = "parachain::candidate-backing=trace,parachain::candidate-selection=trace,parachain::pvf=trace,parachain::collator-protocol=trace,parachain::provisioner=trace"
+
+  [[relaychain.nodes]]
+  name = "bob"
+  [[relaychain.nodes.env]]
+  name = "RUST_LOG"
+  value = "parachain::candidate-backing=trace,parachain::candidate-selection=trace,parachain::pvf=trace,parachain::collator-protocol=trace,parachain::provisioner=trace"
+
+  [[relaychain.nodes]]
+  name = "charlie"
+  [[relaychain.nodes.env]]
+  name = "RUST_LOG"
+  value = "parachain::candidate-backing=trace,parachain::candidate-selection=trace,parachain::pvf=trace,parachain::collator-protocol=trace,parachain::provisioner=trace"
+
+
+[[parachains]]
+id = 2000
+chain = "karura-local"
+
+  [[parachains.collators]]
+  name = "karura-alice"
+  image = "docker.io/acala/karura-node:2.11.0"
+  command = "acala"
+  args = [ "--wasm-execution=compiled", "--execution=wasm", "--force-authoring", "--", "--wasm-execution=compiled"]
+  ws_port = 9999
+  [[parachains.collators.env]]
+  name = "RUST_LOG"
+  value = "sc_basic_authorship=trace,cumulus-consensus=trace,cumulus-collator=trace,collator_protocol=trace,collation_generation=trace,aura=debug"
+
+  [[parachains.collators]]
+  name = "karura-bob"
+  image = "docker.io/acala/karura-node:2.11.0"
+  command = "acala"
+  args = [ "--wasm-execution=compiled", "--execution=wasm", "--force-authoring", "--", "--wasm-execution=compiled" ]
+  ws_port = 9998
+  [[parachains.collators.env]]
+  name = "RUST_LOG"
+  value = "sc_basic_authorship=trace,cumulus-consensus=trace,cumulus-collator=trace,collator_protocol=trace,collation_generation=trace,aura=debug"
+
+  [[parachains.collators]]
+  name = "karura-charlie"
+  image = "docker.io/acala/karura-node:2.11.0"
+  command = "acala"
+  args = [ "--wasm-execution=compiled", "--execution=wasm", "--force-authoring", "--", "--wasm-execution=compiled" ]
+  ws_port = 9997
+  [[parachains.collators.env]]
+  name = "RUST_LOG"
+  value = "sc_basic_authorship=trace,cumulus-consensus=trace,cumulus-collator=trace,collator_protocol=trace,collation_generation=trace,aura=debug"
+
+
+
+[[parachains]]
+id = 2001
+chain = "bifrost-local"
+
+  [[parachains.collators]]
+  name = "bifrost-bob"
+  image = "docker.io/bifrostnetwork/bifrost:bifrost-v0.9.70"
+  command = "bifrost"
+  args = [ "--wasm-execution=compiled", "--execution=wasm", "--force-authoring", "--", "--wasm-execution=compiled" ]
+  ws_port = 9995
+  [[parachains.collators.env]]
+  name = "RUST_LOG"
+  value = "sc_basic_authorship=trace,cumulus-consensus=trace,cumulus-collator=trace,collator_protocol=trace,collation_generation=trace,aura=debug"
+
+
+[[parachains]]
+id = 2002
+chain = "pichiu-local"
+
+  [[parachains.collators]]
+  name = "kylin-alice"
+  image = "docker.io/kylinnetworks/kylin-collator:ro-v0.9.30"
+  command = "kylin-collator"
+  args = [ "--wasm-execution=compiled", "--execution=wasm", "--force-authoring", "--", "--wasm-execution=compiled" ]
+  ws_port = 9991
+  rpc_port = 8833
+  port = 40336
+  [[parachains.collators.env]]
+  name = "RUST_LOG"
+  value = "sc_basic_authorship=trace,cumulus-consensus=trace,cumulus-collator=trace,collator_protocol=trace,collation_generation=trace,aura=debug"
+
+
+[[hrmp_channels]]
+sender = 2000
+recipient = 2001
+max_capacity = 8
+max_message_size = 102400
+
+[[hrmp_channels]]
+sender = 2001
+recipient = 2000
+max_capacity = 8
+max_message_size = 102400
+
+[[hrmp_channels]]
+sender = 2000
+recipient = 2002
+max_capacity = 8
+max_message_size = 102400
+
+[[hrmp_channels]]
+sender = 2002
+recipient = 2000
+max_capacity = 8
+max_message_size = 102400
+
+[[hrmp_channels]]
+sender = 2001
+recipient = 2002
+max_capacity = 8
+max_message_size = 102400
+
+[[hrmp_channels]]
+sender = 2002
+recipient = 2001
+max_capacity = 8
+max_message_size = 102400
