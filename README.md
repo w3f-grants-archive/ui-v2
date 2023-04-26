@@ -175,10 +175,11 @@ Project achievements in chronological order ⌛️.
 - 🥈 2nd Prize, Build a XCM related Tool for Moonbeam - Polkadot North America Hackathon [Hackathon entry](https://devpost.com/software/polkachange-cross-blockchain-transfer-tool)
 - 🥉 3rd Prize, EVM+ DApp for aUSD yield - Polkadot North America Hackathon [Hackathon entry](https://devpost.com/software/polkachange-cross-blockchain-transfer-tool)
 - 🎈 Web 3 Foundation base grant [Application](https://github.com/dudo50/Grants-Program/blob/d182e10ecbd7705aee07edc5f7aa0085d07188e5/applications/ParaSpell.md), [Delivery](https://github.com/w3f/Grant-Milestone-Delivery/pull/584)
-- 🐍 [Basilisk](https://bsx.fi/) treasury proposal 2/2 Approved [link](https://basilisk.subsquare.io/treasury/proposal/2), [link2](https://basilisk.subsquare.io/treasury/proposal/4)
+- 🐍 [Basilisk](https://bsx.fi/) treasury proposal 2 / 2 Approved [link](https://basilisk.subsquare.io/treasury/proposal/2), [link2](https://basilisk.subsquare.io/treasury/proposal/4)
 - 🔭 Web 3 Foundation phase 2 grant Milestone 3 / 3 delivered [Application](https://github.com/w3f/Grants-Program/pull/1245), [Delivery1](https://github.com/w3f/Grant-Milestone-Delivery/pull/670), [Delivery 2 & 3](https://github.com/w3f/Grant-Milestone-Delivery/pull/715) 
 - 📕  Article about Polkadot & ParaSpell created & accepted to be presented at international cross-chain conference IEEE ICBC 2023 [links TBA]
 - 💼 Kusama Treasury Funding proposal number 1 - Upgrade SDK, [Application](https://kusama.subsquare.io/referenda/referendum/123s), [Delivery TBA]()
+- 🏗️ Web 3  Foundation phase 3 grant (Make SDK better) Milestone 1 / 1 delivered [Application](https://github.com/w3f/Grants-Program/pull/1589), [Delivery](https://github.com/w3f/Grant-Milestone-Delivery/pull/836)
 
 ## Founded by
 
